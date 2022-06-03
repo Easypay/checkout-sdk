@@ -71,13 +71,23 @@ describe('SDK', () => {
     expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
   })
 
-  test('displays error when it receives a non-function message handler', () => {
+  test('displays error when it receives a non-function success handler', () => {
     const host = document.createElement('div')
     host.setAttribute('id', 'easypay-checkout')
     document.body.appendChild(host)
     // @ts-ignore
-    startCheckout(manifest, { onMessage: 4 })
-    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('onMessage callback'))
+    startCheckout(manifest, { onSuccess: 4 })
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('onSuccess callback'))
+    expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
+  })
+
+  test('displays error when it receives a non-function error handler', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    // @ts-ignore
+    startCheckout(manifest, { onError: 4 })
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('onError callback'))
     expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
   })
 
@@ -115,22 +125,41 @@ describe('SDK', () => {
     checkout.unmount()
   })
 
-  test('reacts to postMessages', () => {
+  test('reacts to success postMessages', () => {
     const host = document.createElement('div')
     host.setAttribute('id', 'easypay-checkout')
     document.body.appendChild(host)
-    let storedType = ''
+    let storedSuccess = ''
     const checkout = startCheckout(manifest, {
-      onMessage: (checkoutMessage) => {
-        storedType = checkoutMessage
+      onSuccess: (checkoutMessage) => {
+        storedSuccess = checkoutMessage
       }
     })
     const message: MessageEvent = new MessageEvent('message', {
-      data: { type: 'ep-checkout', status: 'complete' },
+      data: { type: 'ep-checkout', status: 'success' },
       origin: 'https://checkout-serverless.quality-utility.aws.easypay.pt'
     })
     window.dispatchEvent(message)
-    expect(storedType).toBe('complete')
+    expect(storedSuccess).toBe('success')
+    checkout.unmount()
+  })
+
+  test('reacts to error postMessages', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    let storedError = {}
+    const checkout = startCheckout(manifest, {
+      onError: (error) => {
+        storedError = error
+      }
+    })
+    const message: MessageEvent = new MessageEvent('message', {
+      data: { type: 'ep-checkout', status: 'error', error: { code: 'checkout-expired' } },
+      origin: 'https://checkout-serverless.quality-utility.aws.easypay.pt'
+    })
+    window.dispatchEvent(message)
+    expect(storedError).toEqual({ code: 'checkout-expired' })
     checkout.unmount()
   })
 
@@ -148,24 +177,24 @@ describe('SDK', () => {
     const host = document.createElement('div')
     host.setAttribute('id', 'easypay-checkout')
     document.body.appendChild(host)
-    let storedType = ''
+    let storedSuccess = ''
     const checkout = startCheckout(manifest, {
-      onMessage: (checkoutMessage) => {
-        storedType = checkoutMessage
+      onSuccess: (checkoutMessage) => {
+        storedSuccess = checkoutMessage
       }
     })
     const message: MessageEvent = new MessageEvent('message', {
-      data: { type: 'ep-checkout', status: 'complete' },
+      data: { type: 'ep-checkout', status: 'success' },
       origin: 'https://checkout-serverless.quality-utility.aws.easypay.pt'
     })
     window.dispatchEvent(message)
-    expect(storedType).toBe('complete')
+    expect(storedSuccess).toBe('success')
     const secondMessage: MessageEvent = new MessageEvent('message', {
-      data: { type: 'ep-checkout', status: 'other' },
+      data: { type: 'ep-checkout', status: 'error', error: { code: 'other' } },
       origin: 'https://checkout-serverless.quality-utility.aws.easypay.pt'
     })
     window.dispatchEvent(secondMessage)
-    expect(storedType).toBe('complete')
+    expect(storedSuccess).toBe('success')
     checkout.unmount()
   })
 
@@ -173,18 +202,18 @@ describe('SDK', () => {
     const host = document.createElement('div')
     host.setAttribute('id', 'easypay-checkout')
     document.body.appendChild(host)
-    let storedType = ''
+    let storedSuccess = ''
     const checkout = startCheckout(manifest, {
-      onMessage: (checkoutMessage) => {
-        storedType = checkoutMessage
+      onSuccess: (checkoutMessage) => {
+        storedSuccess = checkoutMessage
       }
     })
     checkout.unmount()
     const message: MessageEvent = new MessageEvent('message', {
-      data: { type: 'ep-checkout', status: 'complete' },
+      data: { type: 'ep-checkout', status: 'success' },
       origin: 'https://checkout-serverless.quality-utility.aws.easypay.pt'
     })
     window.dispatchEvent(message)
-    expect(storedType).toBe('')
+    expect(storedSuccess).toBe('')
   })
 })

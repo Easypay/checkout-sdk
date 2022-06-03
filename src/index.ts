@@ -24,14 +24,22 @@ export interface CheckoutManifest {
   }
 }
 
+/** Represents an error that happened during a Checkout session. */
+export interface CheckoutError {
+  /** The error code. One of 'checkout-expired', 'already-paid', or 'generic-error'. */
+  code: string
+}
+
 /**
  * The possible options to configure the Checkout SDK.
  */
 export interface CheckoutOptions {
   /** The id of the HTML element in which to insert the Checkout form. */
   id?: string
-  /** The callback to call on Checkout events. */
-  onMessage?: (message: string) => void
+  /** The callback to call on Checkout successful completion. */
+  onSuccess?: (message: string) => void
+  /** The callback to call on Checkout errors. */
+  onError?: (error: CheckoutError) => void
   /** Whether the SDK should use testing APIs. */
   testing?: boolean
 }
@@ -41,7 +49,8 @@ export interface CheckoutOptions {
  */
 const defaultOptions: CheckoutOptions = {
   id: 'easypay-checkout',
-  onMessage: () => { /* do nothing */ },
+  onSuccess: () => { /* do nothing */ },
+  onError: () => { /* do nothing */ },
   testing: false,
 }
 
@@ -73,7 +82,7 @@ export class CheckoutInstance {
     window.addEventListener('message', this.messageHandler)
     const iframe = document.createElement('iframe')
     iframe.setAttribute('src', `${this.originUrl}?manifest=${this.encodeManifest(manifest)}`)
-    // Using the attributes below in order to provide defaults without overriding CSS styles
+    // Using the attributes below in order to provide defaults without overriding CSS styles.
     iframe.setAttribute('width', '400')
     iframe.setAttribute('height', '700')
     iframe.setAttribute('frameborder', '0')
@@ -97,8 +106,12 @@ export class CheckoutInstance {
       console.error(`${CheckoutInstance.LOGTAG} Could not find element ${options.id}.`)
       return false
     }
-    if (typeof options.onMessage !== 'function') {
-      console.error(`${CheckoutInstance.LOGTAG} The onMessage callback must be a function.`)
+    if (typeof options.onSuccess !== 'function') {
+      console.error(`${CheckoutInstance.LOGTAG} The onSuccess callback must be a function.`)
+      return false
+    }
+    if (typeof options.onError !== 'function') {
+      console.error(`${CheckoutInstance.LOGTAG} The onError callback must be a function.`)
       return false
     }
     if (typeof options.testing !== 'boolean') {
@@ -121,17 +134,19 @@ export class CheckoutInstance {
 
   /**
    * Handles messages sent from the Checkout iframe. If the origin and contents are as expected,
-   * pass them on to the message handler that was configured in startCheckout.
+   * pass them on to the event handlers that were configured in startCheckout.
    *
    * If the Checkout becomes completed, automatically removes the event listener.
    */
   private handleMessage(e: MessageEvent) {
     if (e.origin === this.originUrl && e.data.type === 'ep-checkout') {
-      this.options.onMessage!(e.data.status)
-      if (e.data.status === 'complete') {
+      if (e.data.status === 'success') {
+        this.options.onSuccess!(e.data.status)
         if (this.messageHandler) {
           window.removeEventListener('message', this.messageHandler)
         }
+      } else if (e.data.status === 'error') {
+        this.options.onError!(e.data.error)
       }
     }
   }
