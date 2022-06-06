@@ -129,18 +129,20 @@ describe('SDK', () => {
     const host = document.createElement('div')
     host.setAttribute('id', 'easypay-checkout')
     document.body.appendChild(host)
-    let storedSuccess = ''
+    let storedSuccess
     const checkout = startCheckout(manifest, {
       onSuccess: (checkoutMessage) => {
         storedSuccess = checkoutMessage
       }
     })
     const message: MessageEvent = new MessageEvent('message', {
-      data: { type: 'ep-checkout', status: 'success' },
+      data: { type: 'ep-checkout', status: 'success', payment: { paid: true } },
       origin: 'https://pay.easypay.pt'
     })
     window.dispatchEvent(message)
-    expect(storedSuccess).toBe('success')
+    expect(storedSuccess).toEqual({
+      paid: true,
+    })
     checkout.unmount()
   })
 
@@ -177,24 +179,28 @@ describe('SDK', () => {
     const host = document.createElement('div')
     host.setAttribute('id', 'easypay-checkout')
     document.body.appendChild(host)
-    let storedSuccess = ''
+    let storedSuccess
     const checkout = startCheckout(manifest, {
       onSuccess: (checkoutMessage) => {
         storedSuccess = checkoutMessage
       }
     })
     const message: MessageEvent = new MessageEvent('message', {
-      data: { type: 'ep-checkout', status: 'success' },
+      data: { type: 'ep-checkout', status: 'success', payment: { paid: true } },
       origin: 'https://pay.easypay.pt'
     })
     window.dispatchEvent(message)
-    expect(storedSuccess).toBe('success')
+    expect(storedSuccess).toEqual({
+      paid: true,
+    })
     const secondMessage: MessageEvent = new MessageEvent('message', {
-      data: { type: 'ep-checkout', status: 'error', error: { code: 'other' } },
+      data: { type: 'ep-checkout', status: 'success', payment: { paid: false } },
       origin: 'https://pay.easypay.pt'
     })
     window.dispatchEvent(secondMessage)
-    expect(storedSuccess).toBe('success')
+    expect(storedSuccess).toEqual({
+      paid: true,
+    })
     checkout.unmount()
   })
 
@@ -202,7 +208,7 @@ describe('SDK', () => {
     const host = document.createElement('div')
     host.setAttribute('id', 'easypay-checkout')
     document.body.appendChild(host)
-    let storedSuccess = ''
+    let storedSuccess
     const checkout = startCheckout(manifest, {
       onSuccess: (checkoutMessage) => {
         storedSuccess = checkoutMessage
@@ -210,11 +216,11 @@ describe('SDK', () => {
     })
     checkout.unmount()
     const message: MessageEvent = new MessageEvent('message', {
-      data: { type: 'ep-checkout', status: 'success' },
+      data: { type: 'ep-checkout', status: 'success', payment: { paid: true } },
       origin: 'https://pay.easypay.pt'
     })
     window.dispatchEvent(message)
-    expect(storedSuccess).toBe('')
+    expect(storedSuccess).toBeUndefined()
   })
 
   test('ignores messages from unrecognized URLs', () => {
