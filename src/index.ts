@@ -59,8 +59,8 @@ const defaultOptions: CheckoutOptions = {
  * Stores useful parameters and allows cleanup when unmount() is called.
  */
 export class CheckoutInstance {
-  private static PROD_URL = 'https://checkout-serverless.quality-utility.aws.easypay.pt'
-  private static TEST_URL = 'https://checkout-serverless.sandbox.easypay.pt'
+  private static PROD_URL = 'https://pay.easypay.pt'
+  private static TEST_URL = 'https://pay.sandbox.easypay.pt'
   private static LOGTAG = '[easypay Checkout SDK]'
 
   private options: CheckoutOptions
