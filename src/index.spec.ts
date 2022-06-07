@@ -109,7 +109,7 @@ describe('SDK', () => {
     expect(consoleSpy).not.toHaveBeenCalled()
     const iframe = document.querySelector('#easypay-checkout iframe') as HTMLIFrameElement
     expect(iframe).toBeTruthy()
-    expect(iframe.getAttribute('src')).toBe('https://checkout-serverless.quality-utility.aws.easypay.pt?manifest=eyJpZCI6ImlkIiwic2Vzc2lvbiI6InNlc3Npb24iLCJjb25maWciOm51bGx9')
+    expect(iframe.getAttribute('src')).toBe('https://pay.easypay.pt?manifest=eyJpZCI6ImlkIiwic2Vzc2lvbiI6InNlc3Npb24iLCJjb25maWciOm51bGx9')
     checkout.unmount()
   })
 
@@ -121,7 +121,7 @@ describe('SDK', () => {
     expect(consoleSpy).not.toHaveBeenCalled()
     const iframe = document.querySelector('#easypay-checkout iframe') as HTMLIFrameElement
     expect(iframe).toBeTruthy()
-    expect(iframe.getAttribute('src')).toBe('https://checkout-serverless.sandbox.easypay.pt?manifest=eyJpZCI6ImlkIiwic2Vzc2lvbiI6InNlc3Npb24iLCJjb25maWciOm51bGx9')
+    expect(iframe.getAttribute('src')).toBe('https://pay.sandbox.easypay.pt?manifest=eyJpZCI6ImlkIiwic2Vzc2lvbiI6InNlc3Npb24iLCJjb25maWciOm51bGx9')
     checkout.unmount()
   })
 
@@ -137,7 +137,7 @@ describe('SDK', () => {
     })
     const message: MessageEvent = new MessageEvent('message', {
       data: { type: 'ep-checkout', status: 'success' },
-      origin: 'https://checkout-serverless.quality-utility.aws.easypay.pt'
+      origin: 'https://pay.easypay.pt'
     })
     window.dispatchEvent(message)
     expect(storedSuccess).toBe('success')
@@ -156,7 +156,7 @@ describe('SDK', () => {
     })
     const message: MessageEvent = new MessageEvent('message', {
       data: { type: 'ep-checkout', status: 'error', error: { code: 'checkout-expired' } },
-      origin: 'https://checkout-serverless.quality-utility.aws.easypay.pt'
+      origin: 'https://pay.easypay.pt'
     })
     window.dispatchEvent(message)
     expect(storedError).toEqual({ code: 'checkout-expired' })
@@ -185,13 +185,13 @@ describe('SDK', () => {
     })
     const message: MessageEvent = new MessageEvent('message', {
       data: { type: 'ep-checkout', status: 'success' },
-      origin: 'https://checkout-serverless.quality-utility.aws.easypay.pt'
+      origin: 'https://pay.easypay.pt'
     })
     window.dispatchEvent(message)
     expect(storedSuccess).toBe('success')
     const secondMessage: MessageEvent = new MessageEvent('message', {
       data: { type: 'ep-checkout', status: 'error', error: { code: 'other' } },
-      origin: 'https://checkout-serverless.quality-utility.aws.easypay.pt'
+      origin: 'https://pay.easypay.pt'
     })
     window.dispatchEvent(secondMessage)
     expect(storedSuccess).toBe('success')
@@ -211,9 +211,28 @@ describe('SDK', () => {
     checkout.unmount()
     const message: MessageEvent = new MessageEvent('message', {
       data: { type: 'ep-checkout', status: 'success' },
-      origin: 'https://checkout-serverless.quality-utility.aws.easypay.pt'
+      origin: 'https://pay.easypay.pt'
     })
     window.dispatchEvent(message)
     expect(storedSuccess).toBe('')
+  })
+
+  test('ignores messages from unrecognized URLs', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    let storedSuccess
+    const checkout = startCheckout(manifest, {
+      onSuccess: (checkoutMessage) => {
+        storedSuccess = checkoutMessage
+      }
+    })
+    const message: MessageEvent = new MessageEvent('message', {
+      data: { type: 'ep-checkout', status: 'success' },
+      origin: 'https://unrecognized.easypay.pt'
+    })
+    window.dispatchEvent(message)
+    expect(storedSuccess).toBeUndefined()
+    checkout.unmount()
   })
 })
