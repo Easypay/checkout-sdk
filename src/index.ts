@@ -24,6 +24,12 @@ export interface CheckoutManifest {
   }
 }
 
+/** Represents information sent when the Checkout process succeeds. */
+export interface CheckoutPaymentInfo {
+  /** Whether the payment was completed (for synchronous payment methods) or just requested (for asynchronous ones). */
+  paid: boolean
+}
+
 /** Represents an error that happened during a Checkout session. */
 export interface CheckoutError {
   /** The error code. One of 'checkout-expired', 'already-paid', or 'generic-error'. */
@@ -34,10 +40,10 @@ export interface CheckoutError {
  * The possible options to configure the Checkout SDK.
  */
 export interface CheckoutOptions {
-  /** The id of the HTML element in which to insert the Checkout form. */
+  /** The id of the HTML element where the Checkout should be inserted. */
   id?: string
   /** The callback to call on Checkout successful completion. */
-  onSuccess?: (message: string) => void
+  onSuccess?: (paymentInfo: CheckoutPaymentInfo) => void
   /** The callback to call on Checkout errors. */
   onError?: (error: CheckoutError) => void
   /** Whether the SDK should use testing APIs. */
@@ -141,7 +147,7 @@ export class CheckoutInstance {
   private handleMessage(e: MessageEvent) {
     if (e.origin === this.originUrl && e.data.type === 'ep-checkout') {
       if (e.data.status === 'success') {
-        this.options.onSuccess!(e.data.status)
+        this.options.onSuccess!(e.data.payment)
         if (this.messageHandler) {
           window.removeEventListener('message', this.messageHandler)
         }

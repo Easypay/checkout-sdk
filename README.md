@@ -28,11 +28,12 @@ const checkoutInstance = startCheckout(manifest, [options])
 
 **`manifest`** - server to server response from checkout session creation
 
-| Option      | Type       | Required | Default            | Description                                                                                  |
-| ----------- | ---------- | -------- | ------------------ | -------------------------------------------------------------------------------------------- |
-| `id`        | `string`   | no       | `easypay-checkout` | parameter to link the element in the page                                                    |
-| `onMessage` | `function` | no       | `() => {}`         | callback function to receive the checkout event. (for now, only `'complete'` is available)   |
-| `testing`   | `boolean`  | no       | `false`            | parameter to specify whether to use the testing API (`true`) or the production one (`false`) |
+| Option      | Type       | Required | Default            | Description                                                                   |
+| ----------- | ---------- | -------- | ------------------ | ----------------------------------------------------------------------------- |
+| `id`        | `string`   | no       | `easypay-checkout` | The id of the HTML element where the Checkout form should be included.        |
+| `onSuccess` | `function` | no       | `() => {}`         | Callback function to be called when the Checkout is finished successfully.    |
+| `onError`   | `function` | no       | `() => {}`         | Callback function to be called on errors.                                     |
+| `testing`   | `boolean`  | no       | `false`            | Whether to use the testing API (`true`) or the production one (`false`).      |
 
 ### Linking to the Page
 
@@ -46,19 +47,47 @@ const checkoutInstance = startCheckout(manifest, [options])
 checkoutInstance.unmount()
 ```
 
-### On Completion
+### On Success
 
-```js
-const checkoutInstance = startCheckout(manifest, {
-  onMessage: myMessageHandler,
-})
-
-function myMessageHandler(checkoutMessage) {
-  if (checkoutMessage === 'complete') {
-    checkoutInstance.unmount()
-    document.write('Checkout session complete. Thank you.')
+```javascript
+function mySuccessHandler(checkoutPaymentInfo) {
+  checkoutInstance.unmount()
+  if (checkoutPaymentInfo.paid) {
+    /** Payment was received (e.g. credit card). */
+  } else {
+    /** Payment will be completed later (e.g. Multibanco, bank transfer, etc). */
   }
 }
+
+const checkoutInstance = startCheckout(manifest, {
+  onSuccess: mySuccessHandler
+})
+```
+
+### On Error
+
+```javascript
+function myErrorHandler(error) {
+  checkoutInstance.unmount()
+  switch (error.code) {
+    case 'checkout-expired':
+      /** The Checkout session expired and a new one must be created. */
+      const manifest = await yourFunctionToGetTheManifest()
+      checkoutInstance = startCheckout(manifest, {
+        onError: myErrorHandler
+      })
+      break
+    case 'already-paid':
+      /** Order was already paid. */
+      break
+    default:
+      /** Unable to process payment. */
+  }
+}
+
+const checkoutInstance = startCheckout(manifest, {
+  onError: myErrorHandler
+})
 ```
 
 ## Development
