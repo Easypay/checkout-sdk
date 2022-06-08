@@ -7,11 +7,11 @@ describe('SDK', () => {
     session: 'session',
     config: null,
   }
-  
-  const consoleSpy = jest
-    .spyOn(console, 'error')
-    .mockImplementation(() => {  /* do nothing */ })
-  
+
+  const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {
+    /* do nothing */
+  })
+
   afterEach(() => {
     jest.clearAllMocks()
     document.body.innerHTML = ''
@@ -20,35 +20,45 @@ describe('SDK', () => {
   test('displays error when it receives no manifest', () => {
     // @ts-ignore
     startCheckout()
-    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('provide a valid Checkout Manifest'))
+    expect(consoleSpy).toHaveBeenCalledWith(
+      expect.stringContaining('provide a valid Checkout Manifest')
+    )
     expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
   })
 
   test('displays error when it receives a manifest with missing session', () => {
     // @ts-ignore
     startCheckout({ id: 'id' })
-    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('provide a valid Checkout Manifest'))
+    expect(consoleSpy).toHaveBeenCalledWith(
+      expect.stringContaining('provide a valid Checkout Manifest')
+    )
     expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
   })
 
   test('displays error when it receives a manifest with missing id', () => {
     // @ts-ignore
     startCheckout({ session: 'session' })
-    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('provide a valid Checkout Manifest'))
+    expect(consoleSpy).toHaveBeenCalledWith(
+      expect.stringContaining('provide a valid Checkout Manifest')
+    )
     expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
   })
 
   test('displays error when it receives a manifest with empty session', () => {
     // @ts-ignore
     startCheckout({ id: 'id', session: '' })
-    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('provide a valid Checkout Manifest'))
+    expect(consoleSpy).toHaveBeenCalledWith(
+      expect.stringContaining('provide a valid Checkout Manifest')
+    )
     expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
   })
 
   test('displays error when it receives a manifest with empty id', () => {
     // @ts-ignore
     startCheckout({ id: '', session: 'session' })
-    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('provide a valid Checkout Manifest'))
+    expect(consoleSpy).toHaveBeenCalledWith(
+      expect.stringContaining('provide a valid Checkout Manifest')
+    )
     expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
   })
 
@@ -91,6 +101,16 @@ describe('SDK', () => {
     expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
   })
 
+  test('displays error when it receives a non-function close handler', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    // @ts-ignore
+    startCheckout(manifest, { onClose: 4 })
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('onClose callback'))
+    expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
+  })
+
   test('displays error when it receives a non-boolean testing option', () => {
     const host = document.createElement('div')
     host.setAttribute('id', 'easypay-checkout')
@@ -98,6 +118,43 @@ describe('SDK', () => {
     // @ts-ignore
     startCheckout(manifest, { testing: 4 })
     expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('testing option'))
+    expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
+  })
+
+  test('displays error when it receives a non-string display option', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    // @ts-ignore
+    startCheckout(manifest, { display: 4 })
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('display option'))
+    expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
+  })
+
+  test('displays error when it receives an empty display option', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    // @ts-ignore
+    startCheckout(manifest, { display: '' })
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('display option'))
+    expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
+  })
+
+  test('displays error when it receives an onClose option without display option set to popup', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    // @ts-ignore
+    startCheckout(manifest, {
+      onClose: () => {
+        return 'close'
+      },
+      display: 'inline',
+    })
+    expect(consoleSpy).toHaveBeenCalledWith(
+      expect.stringContaining('onClose callback can only be used with display popup')
+    )
     expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
   })
 
@@ -109,7 +166,9 @@ describe('SDK', () => {
     expect(consoleSpy).not.toHaveBeenCalled()
     const iframe = document.querySelector('#easypay-checkout iframe') as HTMLIFrameElement
     expect(iframe).toBeTruthy()
-    expect(iframe.getAttribute('src')).toBe('https://pay.easypay.pt?manifest=eyJpZCI6ImlkIiwic2Vzc2lvbiI6InNlc3Npb24iLCJjb25maWciOm51bGx9')
+    expect(iframe.getAttribute('src')).toBe(
+      'https://pay.easypay.pt?manifest=eyJpZCI6ImlkIiwic2Vzc2lvbiI6InNlc3Npb24iLCJjb25maWciOm51bGx9'
+    )
     checkout.unmount()
   })
 
@@ -121,7 +180,9 @@ describe('SDK', () => {
     expect(consoleSpy).not.toHaveBeenCalled()
     const iframe = document.querySelector('#easypay-checkout iframe') as HTMLIFrameElement
     expect(iframe).toBeTruthy()
-    expect(iframe.getAttribute('src')).toBe('https://pay.sandbox.easypay.pt?manifest=eyJpZCI6ImlkIiwic2Vzc2lvbiI6InNlc3Npb24iLCJjb25maWciOm51bGx9')
+    expect(iframe.getAttribute('src')).toBe(
+      'https://pay.sandbox.easypay.pt?manifest=eyJpZCI6ImlkIiwic2Vzc2lvbiI6InNlc3Npb24iLCJjb25maWciOm51bGx9'
+    )
     checkout.unmount()
   })
 
@@ -133,11 +194,11 @@ describe('SDK', () => {
     const checkout = startCheckout(manifest, {
       onSuccess: (checkoutMessage) => {
         storedSuccess = checkoutMessage
-      }
+      },
     })
     const message: MessageEvent = new MessageEvent('message', {
       data: { type: 'ep-checkout', status: 'success', payment: { paid: true } },
-      origin: 'https://pay.easypay.pt'
+      origin: 'https://pay.easypay.pt',
     })
     window.dispatchEvent(message)
     expect(storedSuccess).toEqual({
@@ -154,11 +215,11 @@ describe('SDK', () => {
     const checkout = startCheckout(manifest, {
       onError: (error) => {
         storedError = error
-      }
+      },
     })
     const message: MessageEvent = new MessageEvent('message', {
       data: { type: 'ep-checkout', status: 'error', error: { code: 'checkout-expired' } },
-      origin: 'https://pay.easypay.pt'
+      origin: 'https://pay.easypay.pt',
     })
     window.dispatchEvent(message)
     expect(storedError).toEqual({ code: 'checkout-expired' })
@@ -183,11 +244,11 @@ describe('SDK', () => {
     const checkout = startCheckout(manifest, {
       onSuccess: (checkoutMessage) => {
         storedSuccess = checkoutMessage
-      }
+      },
     })
     const message: MessageEvent = new MessageEvent('message', {
       data: { type: 'ep-checkout', status: 'success', payment: { paid: true } },
-      origin: 'https://pay.easypay.pt'
+      origin: 'https://pay.easypay.pt',
     })
     window.dispatchEvent(message)
     expect(storedSuccess).toEqual({
@@ -195,7 +256,7 @@ describe('SDK', () => {
     })
     const secondMessage: MessageEvent = new MessageEvent('message', {
       data: { type: 'ep-checkout', status: 'success', payment: { paid: false } },
-      origin: 'https://pay.easypay.pt'
+      origin: 'https://pay.easypay.pt',
     })
     window.dispatchEvent(secondMessage)
     expect(storedSuccess).toEqual({
@@ -212,12 +273,12 @@ describe('SDK', () => {
     const checkout = startCheckout(manifest, {
       onSuccess: (checkoutMessage) => {
         storedSuccess = checkoutMessage
-      }
+      },
     })
     checkout.unmount()
     const message: MessageEvent = new MessageEvent('message', {
       data: { type: 'ep-checkout', status: 'success', payment: { paid: true } },
-      origin: 'https://pay.easypay.pt'
+      origin: 'https://pay.easypay.pt',
     })
     window.dispatchEvent(message)
     expect(storedSuccess).toBeUndefined()
@@ -231,11 +292,11 @@ describe('SDK', () => {
     const checkout = startCheckout(manifest, {
       onSuccess: (checkoutMessage) => {
         storedSuccess = checkoutMessage
-      }
+      },
     })
     const message: MessageEvent = new MessageEvent('message', {
       data: { type: 'ep-checkout', status: 'success' },
-      origin: 'https://unrecognized.easypay.pt'
+      origin: 'https://unrecognized.easypay.pt',
     })
     window.dispatchEvent(message)
     expect(storedSuccess).toBeUndefined()

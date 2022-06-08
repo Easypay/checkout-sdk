@@ -1,0 +1,19 @@
+dialog.epcsdk-modal {
+  border: 0.5px solid #dadada;
+  border-radius: 10px;
+  transition: 200ms linear;
+  background-color: white;
+  width: 400px;
+  max-width: 80%;
+}
+
+dialog.epcsdk-modal::backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+  transition: 200ms ease-in-out;
+}
+
+dialog.epcsdk-modal + .backdrop {
+  /* polyfill */
+  background-color: rgba(0, 0, 0, 0.5);
+  transition: 200ms ease-in-out;
+}

@@ -28,12 +28,14 @@ const checkoutInstance = startCheckout(manifest, [options])
 
 **`manifest`** - server to server response from checkout session creation
 
-| Option      | Type       | Required | Default            | Description                                                                   |
-| ----------- | ---------- | -------- | ------------------ | ----------------------------------------------------------------------------- |
-| `id`        | `string`   | no       | `easypay-checkout` | The id of the HTML element where the Checkout form should be included.        |
-| `onSuccess` | `function` | no       | `() => {}`         | Callback function to be called when the Checkout is finished successfully.    |
-| `onError`   | `function` | no       | `() => {}`         | Callback function to be called on errors.                                     |
-| `testing`   | `boolean`  | no       | `false`            | Whether to use the testing API (`true`) or the production one (`false`).      |
+| Option      | Type       | Required | Default            | Description                                                                |
+| ----------- | ---------- | -------- | ------------------ | -------------------------------------------------------------------------- |
+| `id`        | `string`   | no       | `easypay-checkout` | The id of the HTML element where the Checkout form should be included.     |
+| `onSuccess` | `function` | no       | `() => {}`         | Callback function to be called when the Checkout is finished successfully. |
+| `onError`   | `function` | no       | `() => {}`         | Callback function to be called on errors.                                  |
+| `onClose`   | `function` | no       | `undefined`        | Callback function to be called when the Checkout popup is closed.          |
+| `testing`   | `boolean`  | no       | `false`            | Whether to use the testing API (`true`) or the production one (`false`).   |
+| `display`   | `string`   | no       | `inline`           | The display style of the element that hosts the Checkout                   |
 
 ### Linking to the Page
 
@@ -60,7 +62,7 @@ function mySuccessHandler(checkoutPaymentInfo) {
 }
 
 const checkoutInstance = startCheckout(manifest, {
-  onSuccess: mySuccessHandler
+  onSuccess: mySuccessHandler,
 })
 ```
 
@@ -87,6 +89,18 @@ function myErrorHandler(error) {
 
 const checkoutInstance = startCheckout(manifest, {
   onError: myErrorHandler
+})
+```
+
+### On Close
+
+```js
+function myCloseHandler() {
+  /** Checkout popup closed */
+}
+
+const checkoutInstance = startCheckout(manifest, {
+  onClose: myCloseHandler,
 })
 ```
 
