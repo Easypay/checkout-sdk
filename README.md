@@ -28,14 +28,18 @@ const checkoutInstance = startCheckout(manifest, [options])
 
 **`manifest`** - server to server response from checkout session creation
 
-| Option      | Type       | Required | Default            | Description                                                                |
-| ----------- | ---------- | -------- | ------------------ | -------------------------------------------------------------------------- |
-| `id`        | `string`   | no       | `easypay-checkout` | The id of the HTML element where the Checkout form should be included.     |
-| `onSuccess` | `function` | no       | `() => {}`         | Callback function to be called when the Checkout is finished successfully. |
-| `onError`   | `function` | no       | `() => {}`         | Callback function to be called on errors.                                  |
-| `onClose`   | `function` | no       | `undefined`        | Callback function to be called when the Checkout popup is closed.          |
-| `testing`   | `boolean`  | no       | `false`            | Whether to use the testing API (`true`) or the production one (`false`).   |
-| `display`   | `string`   | no       | `inline`           | The display style of the element that hosts the Checkout                   |
+| Option       | Type       | Required | Default            | Description                                                                |
+| ------------ | ---------- | -------- | ------------------ | -------------------------------------------------------------------------- |
+| `id`         | `string`   | no       | `easypay-checkout` | The id of the HTML element where the Checkout form should be included.     |
+| `onSuccess`  | `function` | no       | `() => {}`         | Callback function to be called when the Checkout is finished successfully. |
+| `onError`    | `function` | no       | `() => {}`         | Callback function to be called on errors.                                  |
+| `onClose`    | `function` | no       | `undefined`        | Callback function to be called when the Checkout popup is closed.          |
+| `testing`    | `boolean`  | no       | `false`            | Whether to use the testing API (`true`) or the production one (`false`).   |
+| `display`(1) | `string`   | no       | `inline`           | The display style of the element that hosts the Checkout                   |
+
+#### Options
+
+(1)`display` available values: `inline`(default) or `popup`
 
 ### Linking to the Page
 
