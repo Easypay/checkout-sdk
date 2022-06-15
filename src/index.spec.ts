@@ -141,6 +141,36 @@ describe('SDK', () => {
     expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
   })
 
+  test('display error when it receives and non-boolean hideDetails option', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    // @ts-ignore
+    startCheckout(manifest, { hideDetails: 4 })
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('hideDetails option'))
+    expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
+  })
+
+  test('display error when it receives and non-string language option', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    // @ts-ignore
+    startCheckout(manifest, { language: 4 })
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('language option'))
+    expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
+  })
+
+  test('display error when it receives and non-string logoUrl option', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    // @ts-ignore
+    startCheckout(manifest, { language: 4 })
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('logoUrl option'))
+    expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
+  })
+
   test('displays error when it receives an onClose option without display option set to popup', () => {
     const host = document.createElement('div')
     host.setAttribute('id', 'easypay-checkout')
