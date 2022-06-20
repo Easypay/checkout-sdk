@@ -61,6 +61,12 @@ export interface CheckoutOptions {
   testing?: boolean
   /** Wether the Checkout should be a popup or an inline element  */
   display?: string
+  /** Wether the Checkout should have the customer details form hidden */
+  hideDetails?: boolean
+  /** Which language should the Checkout be displayed in*/
+  language?: string
+  /** The logo url of the merchant */
+  logoUrl?: string
 }
 
 /**
@@ -76,6 +82,9 @@ const defaultOptions: CheckoutOptions = {
   },
   testing: false,
   display: 'inline',
+  hideDetails: false,
+  language: '',
+  logoUrl: '',
 }
 
 /**
@@ -103,6 +112,9 @@ export class CheckoutInstance {
     if (!this.validateParameters(manifest, this.options)) {
       return
     }
+
+    this.mapOptionsToManifest(manifest, this.options)
+
     if (this.options.testing) {
       this.originUrl = CheckoutInstance.TEST_URL
     }
@@ -131,6 +143,28 @@ export class CheckoutInstance {
       this.hostElement.addEventListener('click', this.clickHandler!)
     } else {
       this.hostElement?.appendChild(iframe)
+    }
+  }
+
+  private mapOptionsToManifest(manifest: CheckoutManifest, options: CheckoutOptions) {
+    const { hideDetails, language, logoUrl, display } = options
+    if (!manifest.config) {
+      manifest.config = {}
+    }
+    if (hideDetails) {
+      manifest.config!.hideDetails = hideDetails
+    }
+    if (language) {
+      manifest.config!.language = language
+    }
+    if (logoUrl) {
+      manifest.config!.logoUrl = logoUrl
+    }
+    if (display === 'popup') {
+      manifest.config!.allowClose = true
+    }
+    if (display === 'inline') {
+      manifest.config!.allowClose = false
     }
   }
 
@@ -183,6 +217,18 @@ export class CheckoutInstance {
     }
     if (typeof options.display !== 'string' || !['inline', 'popup'].includes(options.display)) {
       console.error(`${CheckoutInstance.LOGTAG} The display option must be 'inline' or 'popup'.`)
+      return false
+    }
+    if (typeof options.hideDetails !== 'boolean') {
+      console.error(`${CheckoutInstance.LOGTAG} The hideDetails option must be true or false.`)
+      return false
+    }
+    if (typeof options.language !== 'string') {
+      console.error(`${CheckoutInstance.LOGTAG} The language option must be a string.`)
+      return false
+    }
+    if (typeof options.logoUrl !== 'string') {
+      console.error(`${CheckoutInstance.LOGTAG} The logoUrl option must be a string.`)
       return false
     }
     return true
