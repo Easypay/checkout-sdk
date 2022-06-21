@@ -6,6 +6,7 @@ import dialogCss from 'dialog-polyfill/dist/dialog-polyfill.css'
 // @ts-ignore
 import epcsdkCss from '../src/assets/epcsdk.css'
 
+import { version } from '../package.json'
 /**
  * Represents the object returned by the Checkout creation API call.
  * @see https://api.prod.easypay.pt/docs#tag/Checkout/paths/~1checkout/post
@@ -16,20 +17,9 @@ export interface CheckoutManifest {
   config: null | {
     language?: string
     logoUrl?: string
-    openBtn?: string
-    closeBtn?: string
-    primaryButtons?: string
-    secondaryButtons?: string
-    logoImg?: string
-    stepBadgePrimary?: string
-    stepBadgeSecondary?: string
-    stepTextPrimary?: string
-    stepTextSecondary?: string
-    cartBtn?: string
-    cart?: string
-    cartItem?: string
     hideDetails?: boolean
     allowClose?: boolean
+    sdkVersion?: string
   }
 }
 
@@ -114,6 +104,7 @@ export class CheckoutInstance {
     }
 
     this.mapOptionsToManifest(manifest, this.options)
+    manifest.config!.sdkVersion = version
 
     if (this.options.testing) {
       this.originUrl = CheckoutInstance.TEST_URL
