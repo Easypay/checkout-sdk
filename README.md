@@ -2,7 +2,7 @@
 
 Easypay's Checkout SDK is intended to facilitate integration between your application and our solution to receive payments.
 
-![easypay-checkout](https://user-images.githubusercontent.com/30448483/175095028-a36de17a-6531-4573-86fc-459b8586376c.gif)
+![easypay-checkout](https://user-images.githubusercontent.com/30448483/175291438-1a476f1e-a652-4536-94fa-fdc13456dda6.gif)
 
 ## Installation:
 
