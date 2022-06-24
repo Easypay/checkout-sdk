@@ -166,7 +166,7 @@ describe('SDK', () => {
     host.setAttribute('id', 'easypay-checkout')
     document.body.appendChild(host)
     // @ts-ignore
-    startCheckout(manifest, { language: 4 })
+    startCheckout(manifest, { logoUrl: 4 })
     expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('logoUrl option'))
     expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
   })
@@ -197,7 +197,7 @@ describe('SDK', () => {
     const iframe = document.querySelector('#easypay-checkout iframe') as HTMLIFrameElement
     expect(iframe).toBeTruthy()
     expect(iframe.getAttribute('src')).toBe(
-      'https://pay.easypay.pt?manifest=eyJpZCI6ImlkIiwic2Vzc2lvbiI6InNlc3Npb24iLCJjb25maWciOm51bGx9'
+      'https://pay.easypay.pt?manifest=eyJpZCI6ImlkIiwic2Vzc2lvbiI6InNlc3Npb24iLCJjb25maWciOnsiYWxsb3dDbG9zZSI6ZmFsc2UsInNka1ZlcnNpb24iOiIyLjAuMCJ9fQ=='
     )
     checkout.unmount()
   })
@@ -211,7 +211,7 @@ describe('SDK', () => {
     const iframe = document.querySelector('#easypay-checkout iframe') as HTMLIFrameElement
     expect(iframe).toBeTruthy()
     expect(iframe.getAttribute('src')).toBe(
-      'https://pay.sandbox.easypay.pt?manifest=eyJpZCI6ImlkIiwic2Vzc2lvbiI6InNlc3Npb24iLCJjb25maWciOm51bGx9'
+      'https://pay.sandbox.easypay.pt?manifest=eyJpZCI6ImlkIiwic2Vzc2lvbiI6InNlc3Npb24iLCJjb25maWciOnsiYWxsb3dDbG9zZSI6ZmFsc2UsInNka1ZlcnNpb24iOiIyLjAuMCJ9fQ=='
     )
     checkout.unmount()
   })
