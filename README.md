@@ -143,3 +143,6 @@ $ npm publish
 ## Demo
 
 To test the package you can use the [checkout-demo](https://github.com/Easypay/checkout-demo)
+
+
+
