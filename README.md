@@ -142,4 +142,6 @@ $ npm publish
 
 ## Demo
 
-To test the package you can use the [checkout-demo](https://github.com/Easypay/checkout-demo)
+A [live version](https://checkout-demo.easypay.pt/) of an integration with the SDK is available.
+
+To test the package locally, you can use the source code for the [checkout-demo](https://github.com/Easypay/checkout-demo) as a starting point.
