@@ -145,3 +145,14 @@ $ npm publish
 A [live version](https://checkout-demo.easypay.pt/) of an integration with the SDK is available.
 
 To test the package locally, you can use the source code for the [checkout-demo](https://github.com/Easypay/checkout-demo) as a starting point.
+
+## Common Problems
+
+There are a few problems that may come up while integrating Checkout with your app.
+
+- **Checkout not showing/Blank page initiating checkout**
+
+  If this occurs while integrating Checkout, check the browser devtools to see more details about the error.
+  Sometimes due to some misconfiguration, while calling Checkout creation, this may happen. The fix is simple:
+    1. Open the browser devtools to check which config option is throwing the error.
+    2. Update the option accordingly.
