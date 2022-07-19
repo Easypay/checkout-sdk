@@ -90,6 +90,9 @@ function myErrorHandler(error) {
     case 'already-paid':
       /** Order was already paid. */
       break
+    case 'checkout-canceled':
+      /** Order was canceled */
+      break
     default:
       /** Unable to process payment. */
   }

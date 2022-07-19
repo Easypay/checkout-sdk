@@ -31,7 +31,7 @@ export interface CheckoutPaymentInfo {
 
 /** Represents an error that happened during a Checkout session. */
 export interface CheckoutError {
-  /** The error code. One of 'checkout-expired', 'already-paid', or 'generic-error'. */
+  /** The error code. One of 'checkout-expired', 'already-paid', 'checkout-canceled' or 'generic-error'. */
   code: string
 }
 
