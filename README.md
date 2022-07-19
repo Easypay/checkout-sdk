@@ -60,13 +60,9 @@ checkoutInstance.unmount()
 ### On Success
 
 ```javascript
-function mySuccessHandler(checkoutPaymentInfo) {
+function mySuccessHandler(successInfo) {
   checkoutInstance.unmount()
-  if (checkoutPaymentInfo.paid) {
-    /** Payment was received (e.g. credit card). */
-  } else {
-    /** Payment will be completed later (e.g. Multibanco, bank transfer, etc). */
-  }
+  /** Show your own thank you message and/or do something with the payment info. */
 }
 
 const checkoutInstance = startCheckout(manifest, {

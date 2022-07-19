@@ -23,10 +23,71 @@ export interface CheckoutManifest {
   }
 }
 
+/** The possible types of Checkout payments. */
+export type CheckoutType = 'single' | 'frequent' | 'subscription'
+
+/** The possible payment methods. */
+export type CheckoutMethod = 'cc' | 'mbw' | 'mb' | 'dd' | 'vi' | 'uf' | 'sc'
+
+/** The possible payment status values. */
+export type PaymentStatus =
+  | 'authorised'
+  | 'deleted'
+  | 'enrolled'
+  | 'error'
+  | 'failed'
+  | 'paid'
+  | 'pending'
+  | 'success'
+  | 'tokenized'
+  | 'voided'
+
 /** Represents information sent when the Checkout process succeeds. */
-export interface CheckoutPaymentInfo {
-  /** Whether the payment was completed (for synchronous payment methods) or just requested (for asynchronous ones). */
-  paid: boolean
+export interface CheckoutOutput {
+  /** The Checkout session's id. */
+  id: string
+  /** The Checkout payment type. */
+  type: CheckoutType
+  /** Information about the payment. */
+  payment: {
+    /** The payment's id. */
+    id: string
+    /** The chosen payment method. */
+    method: CheckoutMethod
+    /** The status of the payment. */
+    status: PaymentStatus
+    /** How much is being paid. Not used in frequent payments. */
+    value?: number
+    /** Multibanco entity. Not used in other methods. */
+    entity?: string
+    /** Multibanco reference. Not used in other methods. */
+    reference?: string
+    /** Multibanco expiration date. Not used in other methods. */
+    expirationDate?: string
+    /** SEPA Direct Debit mandate. Used only in Direct Debit. */
+    sddMandate?: {
+      /** Name of the account holder. */
+      accountHolder: string
+      /** The billing entity for the payments. */
+      billingEntity: string
+      /** Country code prefix to the phone number. */
+      countryCode: string
+      /** The customer's e-mail address. */
+      email: string
+      /** The IBAN. */
+      iban: string
+      /** The mandate's ID. */
+      id: string
+      /** The maximum number of debits allowed for this Direct Debit. */
+      maxNumDebits: string
+      /** The customer's name. May be different from the account holder's name. */
+      name: string
+      /** The customer's phone number. */
+      phone: string
+      /** The authorization reference. */
+      referenceAdc: string
+    }
+  }
 }
 
 /** Represents an error that happened during a Checkout session. */
@@ -42,7 +103,7 @@ export interface CheckoutOptions {
   /** The id of the HTML element where the Checkout should be inserted. */
   id?: string
   /** The callback to call on Checkout successful completion. */
-  onSuccess?: (paymentInfo: CheckoutPaymentInfo) => void
+  onSuccess?: (successInfo: CheckoutOutput) => void
   /** The callback to call on Checkout errors. */
   onError?: (error: CheckoutError) => void
   /** The callback to call on Checkout cancel */
@@ -255,7 +316,7 @@ export class CheckoutInstance {
       }
 
       if (e.data.status === 'success') {
-        this.options.onSuccess!(e.data.payment)
+        this.options.onSuccess!(e.data.checkout)
         if (this.messageHandler) {
           window.removeEventListener('message', this.messageHandler)
         }

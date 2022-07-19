@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { startCheckout } from './index'
+import { startCheckout, CheckoutOutput } from './index'
 
 describe('SDK', () => {
   const manifest = {
@@ -11,6 +11,17 @@ describe('SDK', () => {
   const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {
     /* do nothing */
   })
+
+  const checkoutResult: CheckoutOutput = {
+    id: '2fdc12ca-d600-4ef4-be51-be1626cc1328',
+    type: 'single',
+    payment: {
+      id: '4e5a2766-e010-4ed0-8bc0-eea57fb30d63',
+      method: 'cc',
+      status: 'authorised',
+      value: 120,
+    },
+  }
 
   afterEach(() => {
     jest.clearAllMocks()
@@ -226,14 +237,13 @@ describe('SDK', () => {
         storedSuccess = checkoutMessage
       },
     })
+
     const message: MessageEvent = new MessageEvent('message', {
-      data: { type: 'ep-checkout', status: 'success', payment: { paid: true } },
+      data: { type: 'ep-checkout', status: 'success', checkout: checkoutResult },
       origin: 'https://pay.easypay.pt',
     })
     window.dispatchEvent(message)
-    expect(storedSuccess).toEqual({
-      paid: true,
-    })
+    expect(storedSuccess).toEqual(checkoutResult)
     checkout.unmount()
   })
 
@@ -277,21 +287,17 @@ describe('SDK', () => {
       },
     })
     const message: MessageEvent = new MessageEvent('message', {
-      data: { type: 'ep-checkout', status: 'success', payment: { paid: true } },
+      data: { type: 'ep-checkout', status: 'success', checkout: checkoutResult },
       origin: 'https://pay.easypay.pt',
     })
     window.dispatchEvent(message)
-    expect(storedSuccess).toEqual({
-      paid: true,
-    })
+    expect(storedSuccess).toEqual(checkoutResult)
     const secondMessage: MessageEvent = new MessageEvent('message', {
-      data: { type: 'ep-checkout', status: 'success', payment: { paid: false } },
+      data: { type: 'ep-checkout', status: 'success', checkout: checkoutResult },
       origin: 'https://pay.easypay.pt',
     })
     window.dispatchEvent(secondMessage)
-    expect(storedSuccess).toEqual({
-      paid: true,
-    })
+    expect(storedSuccess).toEqual(checkoutResult)
     checkout.unmount()
   })
 
@@ -307,7 +313,7 @@ describe('SDK', () => {
     })
     checkout.unmount()
     const message: MessageEvent = new MessageEvent('message', {
-      data: { type: 'ep-checkout', status: 'success', payment: { paid: true } },
+      data: { type: 'ep-checkout', status: 'success', checkout: checkoutResult },
       origin: 'https://pay.easypay.pt',
     })
     window.dispatchEvent(message)
