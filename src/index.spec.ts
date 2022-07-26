@@ -208,7 +208,7 @@ describe('SDK', () => {
     const iframe = document.querySelector('#easypay-checkout iframe') as HTMLIFrameElement
     expect(iframe).toBeTruthy()
     expect(iframe.getAttribute('src')).toBe(
-      'https://pay.easypay.pt?manifest=eyJpZCI6ImlkIiwic2Vzc2lvbiI6InNlc3Npb24iLCJjb25maWciOnsiYWxsb3dDbG9zZSI6ZmFsc2UsInNka1ZlcnNpb24iOiIyLjAuMCJ9fQ=='
+      'https://pay.easypay.pt?manifest=eyJpZCI6ImlkIiwic2Vzc2lvbiI6InNlc3Npb24iLCJjb25maWciOnsiYWxsb3dDbG9zZSI6ZmFsc2UsInNka1ZlcnNpb24iOiIyLjEuMCJ9fQ=='
     )
     checkout.unmount()
   })
@@ -222,7 +222,7 @@ describe('SDK', () => {
     const iframe = document.querySelector('#easypay-checkout iframe') as HTMLIFrameElement
     expect(iframe).toBeTruthy()
     expect(iframe.getAttribute('src')).toBe(
-      'https://pay.sandbox.easypay.pt?manifest=eyJpZCI6ImlkIiwic2Vzc2lvbiI6InNlc3Npb24iLCJjb25maWciOnsiYWxsb3dDbG9zZSI6ZmFsc2UsInNka1ZlcnNpb24iOiIyLjAuMCJ9fQ=='
+      'https://pay.sandbox.easypay.pt?manifest=eyJpZCI6ImlkIiwic2Vzc2lvbiI6InNlc3Npb24iLCJjb25maWciOnsiYWxsb3dDbG9zZSI6ZmFsc2UsInNka1ZlcnNpb24iOiIyLjEuMCJ9fQ=='
     )
     checkout.unmount()
   })
