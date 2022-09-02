@@ -20,6 +20,7 @@ export interface CheckoutManifest {
     hideDetails?: boolean
     allowClose?: boolean
     sdkVersion?: string
+    backgroundColor?: string
   }
 }
 
@@ -118,6 +119,8 @@ export interface CheckoutOptions {
   language?: string
   /** The logo url of the merchant */
   logoUrl?: string
+  /** The background color of the iframe */
+  backgroundColor?: string
 }
 
 /**
@@ -136,6 +139,7 @@ const defaultOptions: CheckoutOptions = {
   hideDetails: false,
   language: '',
   logoUrl: '',
+  backgroundColor: 'white',
 }
 
 /**
@@ -182,6 +186,9 @@ export class CheckoutInstance {
     iframe.setAttribute('width', '400')
     iframe.setAttribute('height', '700')
     iframe.setAttribute('frameborder', '0')
+    if (this.options.backgroundColor) {
+      iframe.setAttribute('style', `background-color:${this.options.backgroundColor}`)
+    }
 
     this.hostElement = document.getElementById(this.options.id!)!
 
@@ -199,7 +206,7 @@ export class CheckoutInstance {
   }
 
   private mapOptionsToManifest(manifest: CheckoutManifest, options: CheckoutOptions) {
-    const { hideDetails, language, logoUrl, display } = options
+    const { hideDetails, language, logoUrl, display, backgroundColor } = options
     if (!manifest.config) {
       manifest.config = {}
     }
@@ -217,6 +224,9 @@ export class CheckoutInstance {
     }
     if (display === 'inline') {
       manifest.config!.allowClose = false
+    }
+    if (backgroundColor) {
+      manifest.config!.backgroundColor = backgroundColor
     }
   }
 
@@ -281,6 +291,10 @@ export class CheckoutInstance {
     }
     if (typeof options.logoUrl !== 'string') {
       console.error(`${CheckoutInstance.LOGTAG} The logoUrl option must be a string.`)
+      return false
+    }
+    if (typeof options.backgroundColor !== 'string') {
+      console.error(`${CheckoutInstance.LOGTAG} The backgroundColor option must be a string.`)
       return false
     }
     return true
@@ -358,6 +372,9 @@ export class CheckoutInstance {
     // Apply style
     style.appendChild(document.createTextNode(epcsdkCss))
     document.head.appendChild(style)
+    if (this.options.backgroundColor) {
+      dialog.setAttribute('style', `background-color:${this.options.backgroundColor}`)
+    }
 
     // Set Attributes
     dialog.setAttribute('class', 'epcsdk-modal')
