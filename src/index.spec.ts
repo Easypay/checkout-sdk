@@ -152,7 +152,7 @@ describe('SDK', () => {
     expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
   })
 
-  test('display error when it receives and non-boolean hideDetails option', () => {
+  test('display error when it receives a non-boolean hideDetails option', () => {
     const host = document.createElement('div')
     host.setAttribute('id', 'easypay-checkout')
     document.body.appendChild(host)
@@ -162,7 +162,7 @@ describe('SDK', () => {
     expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
   })
 
-  test('display error when it receives and non-string language option', () => {
+  test('display error when it receives a non-string language option', () => {
     const host = document.createElement('div')
     host.setAttribute('id', 'easypay-checkout')
     document.body.appendChild(host)
@@ -172,7 +172,7 @@ describe('SDK', () => {
     expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
   })
 
-  test('display error when it receives and non-string logoUrl option', () => {
+  test('display error when it receives a non-string logoUrl option', () => {
     const host = document.createElement('div')
     host.setAttribute('id', 'easypay-checkout')
     document.body.appendChild(host)
@@ -199,6 +199,51 @@ describe('SDK', () => {
     expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
   })
 
+  test('displays error when it receives a non-string element backgroundColor', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    // @ts-ignore
+    startCheckout(manifest, { backgroundColor: 4 })
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('backgroundColor option'))
+    expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
+  })
+
+  test('displays default backgroundColor when not set', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    // @ts-ignore
+    const checkout = startCheckout(manifest)
+    const iframe = document.querySelector('#easypay-checkout iframe') as HTMLIFrameElement
+    expect(iframe.getAttribute('style')).toContain('background-color:white')
+    checkout.unmount()
+  })
+
+  test('displays customize backgroundColor', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    // @ts-ignore
+    const checkout = startCheckout(manifest, { display: 'popup', backgroundColor: '#32a852' })
+
+    const dialog = document.querySelector('.epcsdk-modal') as HTMLElement
+    const iframe = document.querySelector('.epcsdk-modal iframe') as HTMLIFrameElement
+    expect(iframe).toBeTruthy()
+    expect(dialog).toBeTruthy()
+    expect(dialog.getAttribute('style')).toContain('background-color:#32a852')
+    expect(iframe.getAttribute('style')).toContain('background-color:#32a852')
+
+    const iframeContent = iframe.contentDocument
+    if (iframeContent?.readyState == 'complete') {
+      const checkoutCanvas = iframeContent.querySelector('.ep-checkout-canvas') as HTMLDivElement
+      const canvasStyles = window.getComputedStyle(checkoutCanvas)
+      expect(canvasStyles.backgroundColor).toBe('#32a852')
+    }
+
+    checkout.unmount()
+  })
+
   test('accepts correct arguments and requests checkout', () => {
     const host = document.createElement('div')
     host.setAttribute('id', 'easypay-checkout')
@@ -208,7 +253,7 @@ describe('SDK', () => {
     const iframe = document.querySelector('#easypay-checkout iframe') as HTMLIFrameElement
     expect(iframe).toBeTruthy()
     expect(iframe.getAttribute('src')).toBe(
-      'https://pay.easypay.pt?manifest=eyJpZCI6ImlkIiwic2Vzc2lvbiI6InNlc3Npb24iLCJjb25maWciOnsiYWxsb3dDbG9zZSI6ZmFsc2UsInNka1ZlcnNpb24iOiIyLjEuMCJ9fQ=='
+      'https://pay.easypay.pt?manifest=eyJpZCI6ImlkIiwic2Vzc2lvbiI6InNlc3Npb24iLCJjb25maWciOnsiYWxsb3dDbG9zZSI6ZmFsc2UsImJhY2tncm91bmRDb2xvciI6IndoaXRlIiwic2RrVmVyc2lvbiI6IjIuMS4wIn19'
     )
     checkout.unmount()
   })
@@ -222,7 +267,7 @@ describe('SDK', () => {
     const iframe = document.querySelector('#easypay-checkout iframe') as HTMLIFrameElement
     expect(iframe).toBeTruthy()
     expect(iframe.getAttribute('src')).toBe(
-      'https://pay.sandbox.easypay.pt?manifest=eyJpZCI6ImlkIiwic2Vzc2lvbiI6InNlc3Npb24iLCJjb25maWciOnsiYWxsb3dDbG9zZSI6ZmFsc2UsInNka1ZlcnNpb24iOiIyLjEuMCJ9fQ=='
+      'https://pay.sandbox.easypay.pt?manifest=eyJpZCI6ImlkIiwic2Vzc2lvbiI6InNlc3Npb24iLCJjb25maWciOnsiYWxsb3dDbG9zZSI6ZmFsc2UsImJhY2tncm91bmRDb2xvciI6IndoaXRlIiwic2RrVmVyc2lvbiI6IjIuMS4wIn19'
     )
     checkout.unmount()
   })
