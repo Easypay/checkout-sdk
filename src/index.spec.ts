@@ -182,23 +182,6 @@ describe('SDK', () => {
     expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
   })
 
-  test('displays error when it receives an onClose option without display option set to popup', () => {
-    const host = document.createElement('div')
-    host.setAttribute('id', 'easypay-checkout')
-    document.body.appendChild(host)
-    // @ts-ignore
-    startCheckout(manifest, {
-      onClose: () => {
-        return 'close'
-      },
-      display: 'inline',
-    })
-    expect(consoleSpy).toHaveBeenCalledWith(
-      expect.stringContaining('onClose callback can only be used with display popup')
-    )
-    expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
-  })
-
   test('displays error when it receives a non-string element backgroundColor', () => {
     const host = document.createElement('div')
     host.setAttribute('id', 'easypay-checkout')
@@ -253,7 +236,7 @@ describe('SDK', () => {
     const iframe = document.querySelector('#easypay-checkout iframe') as HTMLIFrameElement
     expect(iframe).toBeTruthy()
     expect(iframe.getAttribute('src')).toBe(
-      'https://pay.easypay.pt?manifest=eyJpZCI6ImlkIiwic2Vzc2lvbiI6InNlc3Npb24iLCJjb25maWciOnsiYWxsb3dDbG9zZSI6ZmFsc2UsImJhY2tncm91bmRDb2xvciI6IndoaXRlIiwic2RrVmVyc2lvbiI6IjIuMS4wIn19'
+      'https://pay.easypay.pt?manifest=eyJpZCI6ImlkIiwic2Vzc2lvbiI6InNlc3Npb24iLCJjb25maWciOnsiYWxsb3dDbG9zZSI6ZmFsc2UsImJhY2tncm91bmRDb2xvciI6IndoaXRlIiwic2RrVmVyc2lvbiI6IjIuMi4wIn19'
     )
     checkout.unmount()
   })
@@ -267,7 +250,7 @@ describe('SDK', () => {
     const iframe = document.querySelector('#easypay-checkout iframe') as HTMLIFrameElement
     expect(iframe).toBeTruthy()
     expect(iframe.getAttribute('src')).toBe(
-      'https://pay.sandbox.easypay.pt?manifest=eyJpZCI6ImlkIiwic2Vzc2lvbiI6InNlc3Npb24iLCJjb25maWciOnsiYWxsb3dDbG9zZSI6ZmFsc2UsImJhY2tncm91bmRDb2xvciI6IndoaXRlIiwic2RrVmVyc2lvbiI6IjIuMS4wIn19'
+      'https://pay.sandbox.easypay.pt?manifest=eyJpZCI6ImlkIiwic2Vzc2lvbiI6InNlc3Npb24iLCJjb25maWciOnsiYWxsb3dDbG9zZSI6ZmFsc2UsImJhY2tncm91bmRDb2xvciI6IndoaXRlIiwic2RrVmVyc2lvbiI6IjIuMi4wIn19'
     )
     checkout.unmount()
   })
@@ -311,6 +294,48 @@ describe('SDK', () => {
     checkout.unmount()
   })
 
+  test('calls onClose in inline mode', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    let storedCall = false
+    const checkout = startCheckout(manifest, {
+      onClose: () => {
+        storedCall = true
+      },
+    })
+    const message: MessageEvent = new MessageEvent('message', {
+      data: { type: 'ep-checkout', status: 'close' },
+      origin: 'https://pay.easypay.pt',
+    })
+    window.dispatchEvent(message)
+    expect(storedCall).toBe(true)
+    checkout.unmount()
+  })
+
+  test('calls onClose in popup mode', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    let storedCall = false
+    const checkout = startCheckout(manifest, {
+      display: 'popup',
+      onClose: () => {
+        storedCall = true
+      },
+    })
+    document.getElementById('easypay-checkout')?.click()
+    expect(document.querySelector('dialog')?.attributes.getNamedItem('open')?.value).toBe('')
+    const message: MessageEvent = new MessageEvent('message', {
+      data: { type: 'ep-checkout', status: 'close' },
+      origin: 'https://pay.easypay.pt',
+    })
+    window.dispatchEvent(message)
+    expect(storedCall).toBe(true)
+    expect(document.querySelector('dialog')?.attributes.getNamedItem('open')).toBe(null)
+    checkout.unmount()
+  })
+
   test('cleans up the DOM', () => {
     const host = document.createElement('div')
     host.setAttribute('id', 'easypay-checkout')
@@ -337,8 +362,26 @@ describe('SDK', () => {
     })
     window.dispatchEvent(message)
     expect(storedSuccess).toEqual(checkoutResult)
+    const closeMessage: MessageEvent = new MessageEvent('message', {
+      data: { type: 'ep-checkout', status: 'close' },
+      origin: 'https://pay.easypay.pt',
+    })
+    window.dispatchEvent(closeMessage)
     const secondMessage: MessageEvent = new MessageEvent('message', {
-      data: { type: 'ep-checkout', status: 'success', checkout: checkoutResult },
+      data: {
+        type: 'ep-checkout',
+        status: 'success',
+        checkout: {
+          id: '2fdc12ca-d600-4ef4-be51-be1626cc1329',
+          type: 'single',
+          payment: {
+            id: '4e5a2766-e010-4ed0-8bc0-eea57fb30d63',
+            method: 'cc',
+            status: 'authorised',
+            value: 120,
+          },
+        }
+      },
       origin: 'https://pay.easypay.pt',
     })
     window.dispatchEvent(secondMessage)

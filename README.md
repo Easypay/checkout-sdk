@@ -61,7 +61,6 @@ checkoutInstance.unmount()
 
 ```javascript
 function mySuccessHandler(successInfo) {
-  checkoutInstance.unmount()
   /** Show your own thank you message and/or do something with the payment info. */
 }
 
@@ -103,7 +102,7 @@ const checkoutInstance = startCheckout(manifest, {
 
 ```js
 function myCloseHandler() {
-  /** Checkout popup closed */
+  /** Checkout interaction closed */
 }
 
 const checkoutInstance = startCheckout(manifest, {

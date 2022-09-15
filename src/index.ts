@@ -107,7 +107,7 @@ export interface CheckoutOptions {
   onSuccess?: (successInfo: CheckoutOutput) => void
   /** The callback to call on Checkout errors. */
   onError?: (error: CheckoutError) => void
-  /** The callback to call on Checkout cancel */
+  /** The callback to call on Checkout close. */
   onClose?: () => void
   /** Whether the SDK should use testing APIs. */
   testing?: boolean
@@ -158,6 +158,8 @@ export class CheckoutInstance {
   private originUrl = CheckoutInstance.PROD_URL
   private messageHandler: ((e: MessageEvent) => void) | null = null
   private clickHandler: ((e: MouseEvent) => void) | null = null
+  private successfulPaymentInteraction = false
+
   /**
    * The class constructor. Sets up the iframe contents and event listener.
    */
@@ -267,12 +269,6 @@ export class CheckoutInstance {
       console.error(`${CheckoutInstance.LOGTAG} The onClose callback must be a function.`)
       return false
     }
-    if (!!options.onClose && options.display === 'inline') {
-      console.error(
-        `${CheckoutInstance.LOGTAG} The onClose callback can only be used with display popup.`
-      )
-      return false
-    }
     if (typeof options.testing !== 'boolean') {
       console.error(`${CheckoutInstance.LOGTAG} The testing option must be true or false.`)
       return false
@@ -316,24 +312,27 @@ export class CheckoutInstance {
    * pass them on to the event handlers that were configured in startCheckout.
    *
    * If the Checkout becomes finished successfuly, automatically removes the event listener.
-   * If the Checkout gets an error or if it is closed, the event listerner is not removed.
+   * If the Checkout gets an error or if it is closed without a successful payment, the event listener is not removed.
    */
   private handleMessage(e: MessageEvent) {
     if (e.origin === this.originUrl && e.data.type === 'ep-checkout') {
-      if (e.data.status === 'close' && this.options.onClose) {
+      if (e.data.status === 'close') {
         if (this.dialog) {
           /* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
           // @ts-ignore
           this.dialog.close()
         }
-        this.options.onClose()
+        if (this.options.onClose) {
+          this.options.onClose()
+        }
+        if (this.successfulPaymentInteraction && this.messageHandler) {
+          window.removeEventListener('message', this.messageHandler)
+        }
       }
 
       if (e.data.status === 'success') {
+        this.successfulPaymentInteraction = true
         this.options.onSuccess!(e.data.checkout)
-        if (this.messageHandler) {
-          window.removeEventListener('message', this.messageHandler)
-        }
       } else if (e.data.status === 'error') {
         this.options.onError!(e.data.error)
       }
