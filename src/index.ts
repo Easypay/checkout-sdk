@@ -21,6 +21,17 @@ export interface CheckoutManifest {
     allowClose?: boolean
     sdkVersion?: string
     backgroundColor?: string
+    accentColor?: string
+    errorColor?: string
+    inputBackgroundColor?: string
+    inputBorderColor?: string
+    inputBorderRadius?: number
+    inputFloatingLabel?: boolean
+    buttonBackgroundColor?: string
+    buttonBorderRadius?: number
+    buttonBoxShadow?: boolean
+    fontFamily?: string
+    baseFontSize?: number
   }
 }
 
@@ -121,6 +132,28 @@ export interface CheckoutOptions {
   logoUrl?: string
   /** The background color of the iframe */
   backgroundColor?: string
+  /** The accent color of the checkout */
+  accentColor?: string
+  /** The error color of the checkout */
+  errorColor?: string
+  /** The checkout inputs background color  */
+  inputBackgroundColor?: string
+  /** The checkout inputs border color  */
+  inputBorderColor?: string
+  /** The checkout inputs border radius  */
+  inputBorderRadius?: number
+  /** The checkout inputs floating label  */
+  inputFloatingLabel?: boolean
+  /** The checkout buttons background color */
+  buttonBackgroundColor?: string
+  /** The checkout buttons border radius */
+  buttonBorderRadius?: number
+  /** The checkout buttons box shadow */
+  buttonBoxShadow?: boolean
+  /** The checkout font family text*/
+  fontFamily?: string
+  /** The checkout font size text*/
+  baseFontSize?: number
 }
 
 /**
@@ -140,6 +173,17 @@ const defaultOptions: CheckoutOptions = {
   language: '',
   logoUrl: '',
   backgroundColor: 'white',
+  accentColor: '',
+  errorColor: '',
+  inputBackgroundColor: '',
+  inputBorderColor: '',
+  inputBorderRadius: undefined,
+  inputFloatingLabel: true,
+  buttonBackgroundColor: '',
+  buttonBorderRadius: undefined,
+  buttonBoxShadow: true,
+  fontFamily: '',
+  baseFontSize: undefined,
 }
 
 /**
@@ -208,7 +252,24 @@ export class CheckoutInstance {
   }
 
   private mapOptionsToManifest(manifest: CheckoutManifest, options: CheckoutOptions) {
-    const { hideDetails, language, logoUrl, display, backgroundColor } = options
+    const {
+      hideDetails,
+      language,
+      logoUrl,
+      display,
+      backgroundColor,
+      accentColor,
+      errorColor,
+      inputBackgroundColor,
+      inputBorderColor,
+      inputBorderRadius,
+      inputFloatingLabel,
+      buttonBackgroundColor,
+      buttonBorderRadius,
+      buttonBoxShadow,
+      fontFamily,
+      baseFontSize,
+    } = options
     if (!manifest.config) {
       manifest.config = {}
     }
@@ -229,6 +290,39 @@ export class CheckoutInstance {
     }
     if (backgroundColor) {
       manifest.config!.backgroundColor = backgroundColor
+    }
+    if (accentColor) {
+      manifest.config!.accentColor = accentColor
+    }
+    if (errorColor) {
+      manifest.config!.errorColor = errorColor
+    }
+    if (inputBackgroundColor) {
+      manifest.config!.inputBackgroundColor = inputBackgroundColor
+    }
+    if (inputBorderColor) {
+      manifest.config!.inputBorderColor = inputBorderColor
+    }
+    if (inputBorderRadius) {
+      manifest.config!.inputBorderRadius = inputBorderRadius
+    }
+    if (inputFloatingLabel !== undefined) {
+      manifest.config!.inputFloatingLabel = inputFloatingLabel
+    }
+    if (buttonBackgroundColor) {
+      manifest.config!.buttonBackgroundColor = buttonBackgroundColor
+    }
+    if (buttonBorderRadius) {
+      manifest.config!.buttonBorderRadius = buttonBorderRadius
+    }
+    if (buttonBoxShadow !== undefined) {
+      manifest.config!.buttonBoxShadow = buttonBoxShadow
+    }
+    if (fontFamily) {
+      manifest.config!.fontFamily = fontFamily
+    }
+    if (baseFontSize) {
+      manifest.config!.baseFontSize = baseFontSize
     }
   }
 
@@ -291,6 +385,57 @@ export class CheckoutInstance {
     }
     if (typeof options.backgroundColor !== 'string') {
       console.error(`${CheckoutInstance.LOGTAG} The backgroundColor option must be a string.`)
+      return false
+    }
+    if (typeof options.accentColor !== 'string') {
+      console.error(`${CheckoutInstance.LOGTAG} The accentColor option must be a string.`)
+      return false
+    }
+    if (typeof options.errorColor !== 'string') {
+      console.error(`${CheckoutInstance.LOGTAG} The errorColor option must be a string.`)
+      return false
+    }
+    if (typeof options.inputBackgroundColor !== 'string') {
+      console.error(`${CheckoutInstance.LOGTAG} The inputBackgroundColor option must be a string.`)
+      return false
+    }
+    if (typeof options.inputBorderColor !== 'string') {
+      console.error(`${CheckoutInstance.LOGTAG} The inputBorderColor option must be a string.`)
+      return false
+    }
+    if (typeof options.inputBorderRadius !== 'number' && options.inputBorderRadius !== undefined) {
+      console.error(`${CheckoutInstance.LOGTAG} The inputBorderRadius option must be a number.`)
+      return false
+    }
+    if (typeof options.inputFloatingLabel !== 'boolean') {
+      console.error(`${CheckoutInstance.LOGTAG} The inputFloatingLabel option must be a boolean.`)
+      return false
+    }
+    if (typeof options.inputFloatingLabel !== 'boolean') {
+      console.error(`${CheckoutInstance.LOGTAG} The inputFloatingLabel option must be a boolean.`)
+      return false
+    }
+    if (typeof options.buttonBackgroundColor !== 'string') {
+      console.error(`${CheckoutInstance.LOGTAG} The buttonBackgroundColor option must be a string.`)
+      return false
+    }
+    if (
+      typeof options.buttonBorderRadius !== 'number' &&
+      options.buttonBorderRadius !== undefined
+    ) {
+      console.error(`${CheckoutInstance.LOGTAG} The buttonBorderRadius option must be a number.`)
+      return false
+    }
+    if (typeof options.buttonBoxShadow !== 'boolean') {
+      console.error(`${CheckoutInstance.LOGTAG} The buttonBoxShadow option must be a boolean.`)
+      return false
+    }
+    if (typeof options.fontFamily !== 'string') {
+      console.error(`${CheckoutInstance.LOGTAG} The fontFamily option must be a string.`)
+      return false
+    }
+    if (typeof options.baseFontSize !== 'number' && options.baseFontSize !== undefined) {
+      console.error(`${CheckoutInstance.LOGTAG} The baseFontSize option must be a number.`)
       return false
     }
     return true

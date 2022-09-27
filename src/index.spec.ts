@@ -192,6 +192,116 @@ describe('SDK', () => {
     expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
   })
 
+  test('displays error when it receives a non-string element accentColor', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    // @ts-ignore
+    startCheckout(manifest, { accentColor: 4 })
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('accentColor option'))
+    expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
+  })
+
+  test('displays error when it receives a non-string element errorColor', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    // @ts-ignore
+    startCheckout(manifest, { errorColor: 4 })
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('errorColor option'))
+    expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
+  })
+
+  test('displays error when it receives a non-string element inputBackgroundColor', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    // @ts-ignore
+    startCheckout(manifest, { inputBackgroundColor: 4 })
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('inputBackgroundColor option'))
+    expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
+  })
+
+  test('displays error when it receives a non-string element inputBorderColor', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    // @ts-ignore
+    startCheckout(manifest, { inputBorderColor: 4 })
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('inputBorderColor option'))
+    expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
+  })
+
+  test('displays error when it receives a non-number element inputBorderRadius', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    // @ts-ignore
+    startCheckout(manifest, { inputBorderRadius: 'test' })
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('inputBorderRadius option'))
+    expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
+  })
+
+  test('displays error when it receives a non-boolean element inputFloatingLabel', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    // @ts-ignore
+    startCheckout(manifest, { inputFloatingLabel: 'test' })
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('inputFloatingLabel option'))
+    expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
+  })
+
+  test('displays error when it receives a non-string element buttonBackgroundColor', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    // @ts-ignore
+    startCheckout(manifest, { buttonBackgroundColor: 4 })
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('buttonBackgroundColor option'))
+    expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
+  })
+
+  test('displays error when it receives a non-number element buttonBorderRadius', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    // @ts-ignore
+    startCheckout(manifest, { buttonBorderRadius: 'test' })
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('buttonBorderRadius option'))
+    expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
+  })
+
+  test('displays error when it receives a non-boolean element buttonBoxShadow', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    // @ts-ignore
+    startCheckout(manifest, { buttonBoxShadow: 'test' })
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('buttonBoxShadow option'))
+    expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
+  })
+
+  test('displays error when it receives a non-string element fontFamily', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    // @ts-ignore
+    startCheckout(manifest, { fontFamily: 4 })
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('fontFamily option'))
+    expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
+  })
+
+  test('displays error when it receives a non-number element baseFontSize', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    // @ts-ignore
+    startCheckout(manifest, { baseFontSize: 'test' })
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('baseFontSize option'))
+    expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
+  })
+
   test('displays default backgroundColor when not set', () => {
     const host = document.createElement('div')
     host.setAttribute('id', 'easypay-checkout')
@@ -236,7 +346,7 @@ describe('SDK', () => {
     const iframe = document.querySelector('#easypay-checkout iframe') as HTMLIFrameElement
     expect(iframe).toBeTruthy()
     expect(iframe.getAttribute('src')).toBe(
-      'https://pay.easypay.pt?manifest=eyJpZCI6ImlkIiwic2Vzc2lvbiI6InNlc3Npb24iLCJjb25maWciOnsiYWxsb3dDbG9zZSI6ZmFsc2UsImJhY2tncm91bmRDb2xvciI6IndoaXRlIiwic2RrVmVyc2lvbiI6IjIuMi4wIn19'
+      'https://pay.easypay.pt?manifest=eyJpZCI6ImlkIiwic2Vzc2lvbiI6InNlc3Npb24iLCJjb25maWciOnsiYWxsb3dDbG9zZSI6ZmFsc2UsImJhY2tncm91bmRDb2xvciI6IndoaXRlIiwiaW5wdXRGbG9hdGluZ0xhYmVsIjp0cnVlLCJidXR0b25Cb3hTaGFkb3ciOnRydWUsInNka1ZlcnNpb24iOiIyLjMuMCJ9fQ=='
     )
     checkout.unmount()
   })
@@ -250,7 +360,7 @@ describe('SDK', () => {
     const iframe = document.querySelector('#easypay-checkout iframe') as HTMLIFrameElement
     expect(iframe).toBeTruthy()
     expect(iframe.getAttribute('src')).toBe(
-      'https://pay.sandbox.easypay.pt?manifest=eyJpZCI6ImlkIiwic2Vzc2lvbiI6InNlc3Npb24iLCJjb25maWciOnsiYWxsb3dDbG9zZSI6ZmFsc2UsImJhY2tncm91bmRDb2xvciI6IndoaXRlIiwic2RrVmVyc2lvbiI6IjIuMi4wIn19'
+      'https://pay.sandbox.easypay.pt?manifest=eyJpZCI6ImlkIiwic2Vzc2lvbiI6InNlc3Npb24iLCJjb25maWciOnsiYWxsb3dDbG9zZSI6ZmFsc2UsImJhY2tncm91bmRDb2xvciI6IndoaXRlIiwiaW5wdXRGbG9hdGluZ0xhYmVsIjp0cnVlLCJidXR0b25Cb3hTaGFkb3ciOnRydWUsInNka1ZlcnNpb24iOiIyLjMuMCJ9fQ=='
     )
     checkout.unmount()
   })
@@ -380,7 +490,7 @@ describe('SDK', () => {
             status: 'authorised',
             value: 120,
           },
-        }
+        },
       },
       origin: 'https://pay.easypay.pt',
     })
@@ -424,6 +534,33 @@ describe('SDK', () => {
     })
     window.dispatchEvent(message)
     expect(storedSuccess).toBeUndefined()
+    checkout.unmount()
+  })
+
+  test('iframe accepts style configurations parameters', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    const checkout = startCheckout(manifest, {
+      hideDetails: true,
+      backgroundColor: 'lightgreen',
+      accentColor: 'darkblue',
+      errorColor: 'mediumpurple',
+      inputBackgroundColor: 'lightgreen',
+      inputBorderColor: 'darkblue',
+      inputBorderRadius: 2,
+      inputFloatingLabel: false,
+      buttonBorderRadius: 3,
+      buttonBoxShadow: false,
+      fontFamily: 'Courier New',
+      baseFontSize: 20,
+    })
+    expect(consoleSpy).not.toHaveBeenCalled()
+    const iframe = document.querySelector('#easypay-checkout iframe') as HTMLIFrameElement
+    expect(iframe).toBeTruthy()
+    expect(iframe.getAttribute('src')).toBe(
+      'https://pay.easypay.pt?manifest=eyJpZCI6ImlkIiwic2Vzc2lvbiI6InNlc3Npb24iLCJjb25maWciOnsiYWxsb3dDbG9zZSI6ZmFsc2UsImJhY2tncm91bmRDb2xvciI6ImxpZ2h0Z3JlZW4iLCJpbnB1dEZsb2F0aW5nTGFiZWwiOmZhbHNlLCJidXR0b25Cb3hTaGFkb3ciOmZhbHNlLCJzZGtWZXJzaW9uIjoiMi4zLjAiLCJoaWRlRGV0YWlscyI6dHJ1ZSwiYWNjZW50Q29sb3IiOiJkYXJrYmx1ZSIsImVycm9yQ29sb3IiOiJtZWRpdW1wdXJwbGUiLCJpbnB1dEJhY2tncm91bmRDb2xvciI6ImxpZ2h0Z3JlZW4iLCJpbnB1dEJvcmRlckNvbG9yIjoiZGFya2JsdWUiLCJpbnB1dEJvcmRlclJhZGl1cyI6MiwiYnV0dG9uQm9yZGVyUmFkaXVzIjozLCJmb250RmFtaWx5IjoiQ291cmllciBOZXciLCJiYXNlRm9udFNpemUiOjIwfX0='
+    )
     checkout.unmount()
   })
 })
