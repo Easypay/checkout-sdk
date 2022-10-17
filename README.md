@@ -30,15 +30,27 @@ const checkoutInstance = startCheckout(manifest, [options])
 
 | Option        | Type       | Required | Default            | Description                                                                |
 | ------------- | ---------- | -------- | ------------------ | -------------------------------------------------------------------------- |
-| `id`          | `string`   | no       | `easypay-checkout` | The id of the HTML element where the Checkout form should be included.     |
-| `onSuccess`   | `function` | no       | `() => {}`         | Callback function to be called when the Checkout is finished successfully. |
-| `onError`     | `function` | no       | `() => {}`         | Callback function to be called on errors.                                  |
-| `onClose`     | `function` | no       | `undefined`        | Callback function to be called when the Checkout popup is closed.          |
-| `testing`     | `boolean`  | no       | `false`            | Whether to use the testing API (`true`) or the production one (`false`).   |
-| `display`(1)  | `string`   | no       | `inline`           | The display style of the element that hosts the Checkout.                  |
-| `hideDetails` | `boolean`  | no       | `false`            | Whether to hide the details form or not.                                   |
-| `language`(2) | `string`   | no       | `undefined`        | The language in which to display the Checkout.                             |
-| `logoUrl`     | `string`   | no       | `undefined`        | The merchant logo url to display in the Checkout.                          |
+| `id`          | `string`   | no       | `'easypay-checkout'` | The id of the HTML element where the Checkout form should be included.     |
+| `onSuccess`   | `function` | no       | `() => {}`           | Callback function to be called when the Checkout is finished successfully. |
+| `onError`     | `function` | no       | `() => {}`           | Callback function to be called on errors.                                  |
+| `onClose`     | `function` | no       | `undefined`          | Callback function to be called when the Checkout interaction is closed.    |
+| `testing`     | `boolean`  | no       | `false`              | Whether to use the testing API (`true`) or the production one (`false`).   |
+| `display`(1)  | `string`   | no       | `'inline'`           | The display style of the element that hosts the Checkout.                  |
+| `hideDetails` | `boolean`  | no       | `false`              | Whether to hide the details form or not. An expandable summary will be shown with the details, instead. |
+| `language`(2) | `string`   | no       | `undefined`          | The language in which to display the Checkout.                             |
+| `logoUrl`               | `string`  | no       | `undefined`     | The merchant logo url to display in the Checkout.                           |
+| `backgroundColor`       | `string`  | no       | `'#ffffff'`     | The color used as the background of the Checkout page.                      |
+| `accentColor`           | `string`  | no       | `'#0d71f9'`     | The color used in highlights, as well as default buttons and input borders. |
+| `errorColor`            | `string`  | no       | `'#ff151f'`     | The color used for errors.                                                  |
+| `inputBackgroundColor`  | `string`  | no       | `'transparent'` | The color used for the input backgrounds.                                   |
+| `inputBorderColor`      | `string`  | no       | *accentColor*   | The color for input borders.                                                |
+| `inputBorderRadius`     | `number`  | no       | `50`            | The border radius for inputs, in `px`.                                      |
+| `inputFloatingLabel`    | `boolean` | no       | `true`          | Whether inputs should use floating labels.                                  |
+| `buttonBackgroundColor` | `string`  | no       | *accentColor*   | The color used for the button backgrounds.                                  |
+| `buttonBorderRadius`    | `number`  | no       | `50`            | The border radius for buttons, in `px`.                                     |
+| `buttonBoxShadow`       | `boolean` | no       | `true`          | Whether the buttons should have box-shadow.                                 |
+| `fontFamily`            | `string`  | no       | `'Overpass'`    | The font used for the text.                                                 |
+| `baseFontSize`          | `number`  | no       | `10`            | The value in `px` for the font size of the root element (`1rem`).           |
 
 #### Options
 
@@ -107,6 +119,23 @@ function myCloseHandler() {
 
 const checkoutInstance = startCheckout(manifest, {
   onClose: myCloseHandler,
+})
+```
+
+### Changing appearance
+
+```js
+const checkoutInstance = easypayCheckout.startCheckout(manifest, {
+  logoUrl: 'www.example.com/mylogo.png',
+  accentColor: 'orange',
+  buttonBackgroundColor: '#111',
+  buttonBoxShadow: false,
+  buttonBorderRadius: 5,
+  inputBorderRadius: 5,
+  inputBorderColor: '#000',
+  inputBackgroundColor: '#ffe7c4',
+  backgroundColor: '#eee',
+  fontFamily: 'https://fonts.gstatic.com/s/raleway/v28/1Ptxg8zYS_SKggPN4iEgvnHyvveLxVvaorCIPrEVIT9d0c8.woff2',
 })
 ```
 
