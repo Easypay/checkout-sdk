@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { startCheckout, CheckoutOutput } from './index'
+import { version as sdkVersion } from '../package.json'
 
 describe('SDK', () => {
   const manifest = {
@@ -129,6 +130,16 @@ describe('SDK', () => {
     // @ts-ignore
     startCheckout(manifest, { testing: 4 })
     expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('testing option'))
+    expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
+  })
+
+  test('displays error when it receives a non-string iframeUrl', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    // @ts-ignore
+    startCheckout(manifest, { iframeUrl: 4 })
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('iframeUrl option'))
     expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
   })
 
@@ -344,9 +355,20 @@ describe('SDK', () => {
     const checkout = startCheckout(manifest)
     expect(consoleSpy).not.toHaveBeenCalled()
     const iframe = document.querySelector('#easypay-checkout iframe') as HTMLIFrameElement
+    const manifestString = window.btoa(JSON.stringify({
+      id: 'id',
+      session: 'session',
+      config: {
+        allowClose: false,
+        backgroundColor: 'white',
+        inputFloatingLabel: true,
+        buttonBoxShadow: true,
+        sdkVersion,
+      }
+    }))
     expect(iframe).toBeTruthy()
     expect(iframe.getAttribute('src')).toBe(
-      'https://pay.easypay.pt?manifest=eyJpZCI6ImlkIiwic2Vzc2lvbiI6InNlc3Npb24iLCJjb25maWciOnsiYWxsb3dDbG9zZSI6ZmFsc2UsImJhY2tncm91bmRDb2xvciI6IndoaXRlIiwiaW5wdXRGbG9hdGluZ0xhYmVsIjp0cnVlLCJidXR0b25Cb3hTaGFkb3ciOnRydWUsInNka1ZlcnNpb24iOiIyLjMuMCJ9fQ=='
+      `https://pay.easypay.pt?manifest=${manifestString}`
     )
     checkout.unmount()
   })
@@ -358,9 +380,45 @@ describe('SDK', () => {
     const checkout = startCheckout(manifest, { testing: true })
     expect(consoleSpy).not.toHaveBeenCalled()
     const iframe = document.querySelector('#easypay-checkout iframe') as HTMLIFrameElement
+    const manifestString = window.btoa(JSON.stringify({
+      id: 'id',
+      session: 'session',
+      config: {
+        allowClose: false,
+        backgroundColor: 'white',
+        inputFloatingLabel: true,
+        buttonBoxShadow: true,
+        sdkVersion,
+      }
+    }))
     expect(iframe).toBeTruthy()
     expect(iframe.getAttribute('src')).toBe(
-      'https://pay.sandbox.easypay.pt?manifest=eyJpZCI6ImlkIiwic2Vzc2lvbiI6InNlc3Npb24iLCJjb25maWciOnsiYWxsb3dDbG9zZSI6ZmFsc2UsImJhY2tncm91bmRDb2xvciI6IndoaXRlIiwiaW5wdXRGbG9hdGluZ0xhYmVsIjp0cnVlLCJidXR0b25Cb3hTaGFkb3ciOnRydWUsInNka1ZlcnNpb24iOiIyLjMuMCJ9fQ=='
+      `https://pay.sandbox.easypay.pt?manifest=${manifestString}`
+    )
+    checkout.unmount()
+  })
+
+  test('requests custom URL', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    const checkout = startCheckout(manifest, { iframeUrl: 'https://localhost/nothing' })
+    expect(consoleSpy).not.toHaveBeenCalled()
+    const iframe = document.querySelector('#easypay-checkout iframe') as HTMLIFrameElement
+    const manifestString = window.btoa(JSON.stringify({
+      id: 'id',
+      session: 'session',
+      config: {
+        allowClose: false,
+        backgroundColor: 'white',
+        inputFloatingLabel: true,
+        buttonBoxShadow: true,
+        sdkVersion,
+      }
+    }))
+    expect(iframe).toBeTruthy()
+    expect(iframe.getAttribute('src')).toBe(
+      `https://localhost/nothing?manifest=${manifestString}`
     )
     checkout.unmount()
   })
@@ -541,7 +599,7 @@ describe('SDK', () => {
     const host = document.createElement('div')
     host.setAttribute('id', 'easypay-checkout')
     document.body.appendChild(host)
-    const checkout = startCheckout(manifest, {
+    const options = {
       hideDetails: true,
       backgroundColor: 'lightgreen',
       accentColor: 'darkblue',
@@ -554,12 +612,33 @@ describe('SDK', () => {
       buttonBoxShadow: false,
       fontFamily: 'Courier New',
       baseFontSize: 20,
-    })
+    }
+    const checkout = startCheckout(manifest, options)
     expect(consoleSpy).not.toHaveBeenCalled()
     const iframe = document.querySelector('#easypay-checkout iframe') as HTMLIFrameElement
+    const manifestString = window.btoa(JSON.stringify({
+      id: 'id',
+      session: 'session',
+      config: {
+        allowClose: false,
+        backgroundColor: 'lightgreen',
+        inputFloatingLabel: false,
+        buttonBoxShadow: false,
+        sdkVersion,
+        hideDetails: true,
+        accentColor: 'darkblue',
+        errorColor: 'mediumpurple',
+        inputBackgroundColor: 'lightgreen',
+        inputBorderColor: 'darkblue',
+        inputBorderRadius: 2,
+        buttonBorderRadius: 3,
+        fontFamily: 'Courier New',
+        baseFontSize: 20
+      }
+    }))
     expect(iframe).toBeTruthy()
     expect(iframe.getAttribute('src')).toBe(
-      'https://pay.easypay.pt?manifest=eyJpZCI6ImlkIiwic2Vzc2lvbiI6InNlc3Npb24iLCJjb25maWciOnsiYWxsb3dDbG9zZSI6ZmFsc2UsImJhY2tncm91bmRDb2xvciI6ImxpZ2h0Z3JlZW4iLCJpbnB1dEZsb2F0aW5nTGFiZWwiOmZhbHNlLCJidXR0b25Cb3hTaGFkb3ciOmZhbHNlLCJzZGtWZXJzaW9uIjoiMi4zLjAiLCJoaWRlRGV0YWlscyI6dHJ1ZSwiYWNjZW50Q29sb3IiOiJkYXJrYmx1ZSIsImVycm9yQ29sb3IiOiJtZWRpdW1wdXJwbGUiLCJpbnB1dEJhY2tncm91bmRDb2xvciI6ImxpZ2h0Z3JlZW4iLCJpbnB1dEJvcmRlckNvbG9yIjoiZGFya2JsdWUiLCJpbnB1dEJvcmRlclJhZGl1cyI6MiwiYnV0dG9uQm9yZGVyUmFkaXVzIjozLCJmb250RmFtaWx5IjoiQ291cmllciBOZXciLCJiYXNlRm9udFNpemUiOjIwfX0='
+      `https://pay.easypay.pt?manifest=${manifestString}`
     )
     checkout.unmount()
   })
