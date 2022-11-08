@@ -122,6 +122,8 @@ export interface CheckoutOptions {
   onClose?: () => void
   /** Whether the SDK should use testing APIs. */
   testing?: boolean
+  /** The Checkout iframe URL which to include. Used to debug only. Will override the testing URL. */
+  iframeUrl?: string
   /** Wether the Checkout should be a popup or an inline element  */
   display?: string
   /** Wether the Checkout should have the customer details form hidden */
@@ -168,6 +170,7 @@ const defaultOptions: CheckoutOptions = {
     /* do nothing */
   },
   testing: false,
+  iframeUrl: '',
   display: 'inline',
   hideDetails: false,
   language: '',
@@ -219,6 +222,10 @@ export class CheckoutInstance {
 
     if (this.options.testing) {
       this.originUrl = CheckoutInstance.TEST_URL
+    }
+
+    if (this.options.iframeUrl) {
+      this.originUrl = this.options.iframeUrl
     }
 
     this.messageHandler = this.handleMessage.bind(this)
@@ -365,6 +372,10 @@ export class CheckoutInstance {
     }
     if (typeof options.testing !== 'boolean') {
       console.error(`${CheckoutInstance.LOGTAG} The testing option must be true or false.`)
+      return false
+    }
+    if (typeof options.iframeUrl !== 'string') {
+      console.error(`${CheckoutInstance.LOGTAG} The iframeUrl option must be a string.`)
       return false
     }
     if (typeof options.display !== 'string' || !['inline', 'popup'].includes(options.display)) {
