@@ -1,9 +1,9 @@
 {
   "name": "@easypaypt/checkout-sdk",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "description": "SDK for easypay's Checkout",
-  "main": "dist/bundle.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/src/index.d.ts",
   "files": [
     "/dist"
   ],

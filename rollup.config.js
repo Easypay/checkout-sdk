@@ -9,7 +9,7 @@ import json from '@rollup/plugin-json'
 export default {
   input: 'src/index.ts',
   output: {
-    file: 'dist/bundle.js',
+    file: 'dist/index.js',
     format: 'umd',
     name: 'easypayCheckout',
     sourcemap: 'bundle',
