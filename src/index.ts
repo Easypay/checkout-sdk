@@ -104,8 +104,18 @@ export interface CheckoutOutput {
 
 /** Represents an error that happened during a Checkout session. */
 export interface CheckoutError {
-  /** The error code. One of 'checkout-expired', 'already-paid', 'checkout-canceled' or 'generic-error'. */
-  code: string
+  /** The error code. */
+  code: 'checkout-expired' | 'already-paid' | 'checkout-canceled' | 'generic-error'
+}
+
+/** Represents a payment error that happened during a Checkout session. */
+export interface CheckoutPaymentError {
+  /** The error code. */
+  code: 'payment-failure' | 'generic-error'
+  /** The payment method for which the error happened.  */
+  paymentMethod: CheckoutMethod
+  /** On `payment-failure` errors, the Checkout that had already been created. */
+  checkout?: CheckoutOutput
 }
 
 /**
@@ -118,6 +128,8 @@ export interface CheckoutOptions {
   onSuccess?: (successInfo: CheckoutOutput) => void
   /** The callback to call on Checkout errors. */
   onError?: (error: CheckoutError) => void
+  /** The callback to call on Payment errors. */
+  onPaymentError?: (error: CheckoutPaymentError) => void
   /** The callback to call on Checkout close. */
   onClose?: () => void
   /** Whether the SDK should use testing APIs. */
@@ -167,6 +179,9 @@ const defaultOptions: CheckoutOptions = {
     /* do nothing */
   },
   onError: () => {
+    /* do nothing */
+  },
+  onPaymentError: () => {
     /* do nothing */
   },
   testing: false,
@@ -366,6 +381,10 @@ export class CheckoutInstance {
       console.error(`${CheckoutInstance.LOGTAG} The onError callback must be a function.`)
       return false
     }
+    if (typeof options.onPaymentError !== 'function') {
+      console.error(`${CheckoutInstance.LOGTAG} The onPaymentError callback must be a function.`)
+      return false
+    }
     if (!!options.onClose && typeof options.onClose !== 'function') {
       console.error(`${CheckoutInstance.LOGTAG} The onClose callback must be a function.`)
       return false
@@ -486,11 +505,26 @@ export class CheckoutInstance {
         }
       }
 
-      if (e.data.status === 'success') {
-        this.successfulPaymentInteraction = true
-        this.options.onSuccess!(e.data.checkout)
-      } else if (e.data.status === 'error') {
-        this.options.onError!(e.data.error)
+      switch(e.data.status) {
+        case 'success':
+          this.successfulPaymentInteraction = true
+          this.options.onSuccess!(e.data.checkout)
+          break
+        case 'error':
+          this.options.onError!(e.data.error)
+          break
+        case 'payment-error':
+          const paymentError: CheckoutPaymentError = {
+            code: e.data.error.code,
+            paymentMethod: e.data.paymentMethod,
+          }
+          if (e.data.checkout) {
+            paymentError.checkout = e.data.checkout
+          }
+          this.options.onPaymentError!(paymentError)
+          break
+        default:
+          // Do nothing
       }
     }
   }
