@@ -113,6 +113,16 @@ describe('SDK', () => {
     expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
   })
 
+  test('displays error when it receives a non-function paymentError handler', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    // @ts-ignore
+    startCheckout(manifest, { onPaymentError: false })
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('onPaymentError callback'))
+    expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
+  })
+
   test('displays error when it receives a non-function close handler', () => {
     const host = document.createElement('div')
     host.setAttribute('id', 'easypay-checkout')
@@ -459,6 +469,59 @@ describe('SDK', () => {
     })
     window.dispatchEvent(message)
     expect(storedError).toEqual({ code: 'checkout-expired' })
+    checkout.unmount()
+  })
+
+  test('reacts to payment-error postMessages without checkout object', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    let storedPaymentError = {}
+    const checkout = startCheckout(manifest, {
+      onPaymentError: (error) => {
+        storedPaymentError = error
+      },
+    })
+    const message: MessageEvent = new MessageEvent('message', {
+      data: {
+        type: 'ep-checkout',
+        status: 'payment-error',
+        error: { code: 'generic-error' },
+        paymentMethod: 'mb',
+      },
+      origin: 'https://pay.easypay.pt',
+    })
+    window.dispatchEvent(message)
+    expect(storedPaymentError).toEqual({ code: 'generic-error', paymentMethod: 'mb' })
+    checkout.unmount()
+  })
+
+  test('reacts to payment-error postMessages with checkout object', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    let storedPaymentError = {}
+    const checkout = startCheckout(manifest, {
+      onPaymentError: (error) => {
+        storedPaymentError = error
+      },
+    })
+    const message: MessageEvent = new MessageEvent('message', {
+      data: {
+        type: 'ep-checkout',
+        status: 'payment-error',
+        error: { code: 'payment-failure' },
+        paymentMethod: 'cc',
+        checkout: checkoutResult,
+      },
+      origin: 'https://pay.easypay.pt',
+    })
+    window.dispatchEvent(message)
+    expect(storedPaymentError).toEqual({
+      code: 'payment-failure',
+      paymentMethod: 'cc',
+      checkout: checkoutResult,
+    })
     checkout.unmount()
   })
 
