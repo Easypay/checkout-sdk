@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { startCheckout, CheckoutOutput } from './index'
-import { version as sdkVersion } from '../package.json'
+import { version as sdkVersion } from '../package.json'
 
 describe('SDK', () => {
   const manifest = {
@@ -430,6 +430,33 @@ describe('SDK', () => {
     expect(iframe.getAttribute('src')).toBe(
       `https://localhost/nothing?manifest=${manifestString}`
     )
+    checkout.unmount()
+  })
+
+  test('sets iframe allow="payment" attribute', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    const checkout = startCheckout(manifest)
+    expect(consoleSpy).not.toHaveBeenCalled()
+    const iframe = document.querySelector('#easypay-checkout iframe') as HTMLIFrameElement
+    expect(iframe).toBeTruthy()
+    expect(iframe.getAttribute('allow')).toBe('payment')
+    checkout.unmount()
+  })
+
+  test('sets iframe allow="payment" attribute in popup mode', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    const checkout = startCheckout(manifest, {
+      display: 'popup',
+    })
+    expect(consoleSpy).not.toHaveBeenCalled()
+    document.getElementById('easypay-checkout')?.click()
+    const iframe = document.querySelector('dialog iframe') as HTMLIFrameElement
+    expect(iframe).toBeTruthy()
+    expect(iframe.getAttribute('allow')).toBe('payment')
     checkout.unmount()
   })
 

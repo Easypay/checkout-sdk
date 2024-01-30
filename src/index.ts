@@ -254,6 +254,7 @@ export class CheckoutInstance {
     iframe.setAttribute('width', '400')
     iframe.setAttribute('height', '700')
     iframe.setAttribute('frameborder', '0')
+    iframe.setAttribute('allow', 'payment')
     if (this.options.backgroundColor) {
       iframe.setAttribute('style', `background-color:${this.options.backgroundColor}`)
     }
