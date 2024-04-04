@@ -330,11 +330,11 @@ describe('SDK', () => {
     // @ts-ignore
     const checkout = startCheckout(manifest)
     const iframe = document.querySelector('#easypay-checkout iframe') as HTMLIFrameElement
-    expect(iframe.getAttribute('style')).toContain('background-color:white')
+    expect(iframe.getAttribute('style')).toContain('background-color: white')
     checkout.unmount()
   })
 
-  test('displays customize backgroundColor', () => {
+  test('displays customized backgroundColor', () => {
     const host = document.createElement('div')
     host.setAttribute('id', 'easypay-checkout')
     document.body.appendChild(host)
@@ -346,7 +346,7 @@ describe('SDK', () => {
     expect(iframe).toBeTruthy()
     expect(dialog).toBeTruthy()
     expect(dialog.getAttribute('style')).toContain('background-color:#32a852')
-    expect(iframe.getAttribute('style')).toContain('background-color:#32a852')
+    expect(iframe.getAttribute('style')).toContain('background-color: rgb(50, 168, 82)')
 
     const iframeContent = iframe.contentDocument
     if (iframeContent?.readyState == 'complete') {
@@ -457,6 +457,33 @@ describe('SDK', () => {
     const iframe = document.querySelector('dialog iframe') as HTMLIFrameElement
     expect(iframe).toBeTruthy()
     expect(iframe.getAttribute('allow')).toBe('payment')
+    checkout.unmount()
+  })
+
+  test('sets iframe max-width', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    const checkout = startCheckout(manifest)
+    expect(consoleSpy).not.toHaveBeenCalled()
+    const iframe = document.querySelector('#easypay-checkout iframe') as HTMLIFrameElement
+    expect(iframe).toBeTruthy()
+    expect(iframe.getAttribute('style')).toContain('max-width: 100%')
+    checkout.unmount()
+  })
+
+  test('sets iframe max-width in popup mode', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    const checkout = startCheckout(manifest, {
+      display: 'popup',
+    })
+    expect(consoleSpy).not.toHaveBeenCalled()
+    document.getElementById('easypay-checkout')?.click()
+    const iframe = document.querySelector('dialog iframe') as HTMLIFrameElement
+    expect(iframe).toBeTruthy()
+    expect(iframe.getAttribute('style')).toContain('max-width: 100%')
     checkout.unmount()
   })
 
@@ -730,6 +757,7 @@ describe('SDK', () => {
     expect(iframe.getAttribute('src')).toBe(
       `https://pay.easypay.pt?manifest=${manifestString}`
     )
+    expect(iframe.style.backgroundColor).toBe('lightgreen')
     checkout.unmount()
   })
 })
