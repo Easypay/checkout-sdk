@@ -1,10 +1,11 @@
 dialog.epcsdk-modal {
   border: 0.5px solid #dadada;
   border-radius: 10px;
-  transition: 200ms linear;
-  background-color: white;
+  padding: 0;
   width: 400px;
-  max-width: 80%;
+  max-width: 90%;
+  background-color: white;
+  transition: 200ms linear;
 }
 
 dialog.epcsdk-modal::backdrop {
