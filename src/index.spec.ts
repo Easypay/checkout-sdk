@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { startCheckout, CheckoutOutput } from './index'
-import { version as sdkVersion } from '../package.json'
+import { version as sdkVersion } from '../package.json'
 
 describe('SDK', () => {
   const manifest = {
@@ -110,6 +110,16 @@ describe('SDK', () => {
     // @ts-ignore
     startCheckout(manifest, { onError: 4 })
     expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('onError callback'))
+    expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
+  })
+
+  test('displays error when it receives a non-function paymentError handler', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    // @ts-ignore
+    startCheckout(manifest, { onPaymentError: false })
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('onPaymentError callback'))
     expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
   })
 
@@ -320,11 +330,11 @@ describe('SDK', () => {
     // @ts-ignore
     const checkout = startCheckout(manifest)
     const iframe = document.querySelector('#easypay-checkout iframe') as HTMLIFrameElement
-    expect(iframe.getAttribute('style')).toContain('background-color:white')
+    expect(iframe.getAttribute('style')).toContain('background-color: white')
     checkout.unmount()
   })
 
-  test('displays customize backgroundColor', () => {
+  test('displays customized backgroundColor', () => {
     const host = document.createElement('div')
     host.setAttribute('id', 'easypay-checkout')
     document.body.appendChild(host)
@@ -336,7 +346,7 @@ describe('SDK', () => {
     expect(iframe).toBeTruthy()
     expect(dialog).toBeTruthy()
     expect(dialog.getAttribute('style')).toContain('background-color:#32a852')
-    expect(iframe.getAttribute('style')).toContain('background-color:#32a852')
+    expect(iframe.getAttribute('style')).toContain('background-color: rgb(50, 168, 82)')
 
     const iframeContent = iframe.contentDocument
     if (iframeContent?.readyState == 'complete') {
@@ -423,6 +433,60 @@ describe('SDK', () => {
     checkout.unmount()
   })
 
+  test('sets iframe allow="payment" attribute', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    const checkout = startCheckout(manifest)
+    expect(consoleSpy).not.toHaveBeenCalled()
+    const iframe = document.querySelector('#easypay-checkout iframe') as HTMLIFrameElement
+    expect(iframe).toBeTruthy()
+    expect(iframe.getAttribute('allow')).toBe('payment')
+    checkout.unmount()
+  })
+
+  test('sets iframe allow="payment" attribute in popup mode', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    const checkout = startCheckout(manifest, {
+      display: 'popup',
+    })
+    expect(consoleSpy).not.toHaveBeenCalled()
+    document.getElementById('easypay-checkout')?.click()
+    const iframe = document.querySelector('dialog iframe') as HTMLIFrameElement
+    expect(iframe).toBeTruthy()
+    expect(iframe.getAttribute('allow')).toBe('payment')
+    checkout.unmount()
+  })
+
+  test('sets iframe max-width', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    const checkout = startCheckout(manifest)
+    expect(consoleSpy).not.toHaveBeenCalled()
+    const iframe = document.querySelector('#easypay-checkout iframe') as HTMLIFrameElement
+    expect(iframe).toBeTruthy()
+    expect(iframe.getAttribute('style')).toContain('max-width: 100%')
+    checkout.unmount()
+  })
+
+  test('sets iframe max-width in popup mode', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    const checkout = startCheckout(manifest, {
+      display: 'popup',
+    })
+    expect(consoleSpy).not.toHaveBeenCalled()
+    document.getElementById('easypay-checkout')?.click()
+    const iframe = document.querySelector('dialog iframe') as HTMLIFrameElement
+    expect(iframe).toBeTruthy()
+    expect(iframe.getAttribute('style')).toContain('max-width: 100%')
+    checkout.unmount()
+  })
+
   test('reacts to success postMessages', () => {
     const host = document.createElement('div')
     host.setAttribute('id', 'easypay-checkout')
@@ -459,6 +523,59 @@ describe('SDK', () => {
     })
     window.dispatchEvent(message)
     expect(storedError).toEqual({ code: 'checkout-expired' })
+    checkout.unmount()
+  })
+
+  test('reacts to payment-error postMessages without checkout object', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    let storedPaymentError = {}
+    const checkout = startCheckout(manifest, {
+      onPaymentError: (error) => {
+        storedPaymentError = error
+      },
+    })
+    const message: MessageEvent = new MessageEvent('message', {
+      data: {
+        type: 'ep-checkout',
+        status: 'payment-error',
+        error: { code: 'generic-error' },
+        paymentMethod: 'mb',
+      },
+      origin: 'https://pay.easypay.pt',
+    })
+    window.dispatchEvent(message)
+    expect(storedPaymentError).toEqual({ code: 'generic-error', paymentMethod: 'mb' })
+    checkout.unmount()
+  })
+
+  test('reacts to payment-error postMessages with checkout object', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    let storedPaymentError = {}
+    const checkout = startCheckout(manifest, {
+      onPaymentError: (error) => {
+        storedPaymentError = error
+      },
+    })
+    const message: MessageEvent = new MessageEvent('message', {
+      data: {
+        type: 'ep-checkout',
+        status: 'payment-error',
+        error: { code: 'payment-failure' },
+        paymentMethod: 'cc',
+        checkout: checkoutResult,
+      },
+      origin: 'https://pay.easypay.pt',
+    })
+    window.dispatchEvent(message)
+    expect(storedPaymentError).toEqual({
+      code: 'payment-failure',
+      paymentMethod: 'cc',
+      checkout: checkoutResult,
+    })
     checkout.unmount()
   })
 
@@ -640,6 +757,7 @@ describe('SDK', () => {
     expect(iframe.getAttribute('src')).toBe(
       `https://pay.easypay.pt?manifest=${manifestString}`
     )
+    expect(iframe.style.backgroundColor).toBe('lightgreen')
     checkout.unmount()
   })
 })
