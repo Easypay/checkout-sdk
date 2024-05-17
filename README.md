@@ -28,16 +28,17 @@ const checkoutInstance = startCheckout(manifest, [options])
 
 **`manifest`** - server to server response from checkout session creation
 
-| Option        | Type       | Required | Default            | Description                                                                |
-| ------------- | ---------- | -------- | ------------------ | -------------------------------------------------------------------------- |
-| `id`          | `string`   | no       | `'easypay-checkout'` | The id of the HTML element where the Checkout form should be included.     |
-| `onSuccess`   | `function` | no       | `() => {}`           | Callback function to be called when the Checkout is finished successfully. |
-| `onError`     | `function` | no       | `() => {}`           | Callback function to be called on errors.                                  |
-| `onClose`     | `function` | no       | `undefined`          | Callback function to be called when the Checkout interaction is closed.    |
-| `testing`     | `boolean`  | no       | `false`              | Whether to use the testing API (`true`) or the production one (`false`).   |
-| `display`(1)  | `string`   | no       | `'inline'`           | The display style of the element that hosts the Checkout.                  |
-| `hideDetails` | `boolean`  | no       | `false`              | Whether to hide the details form or not. An expandable summary will be shown with the details, instead. |
-| `language`(2) | `string`   | no       | `undefined`          | The language in which to display the Checkout.                             |
+| Option           | Type       | Required | Default              | Description                                                                |
+| ---------------- | ---------- | -------- | -------------------- | -------------------------------------------------------------------------- |
+| `id`             | `string`   | no       | `'easypay-checkout'` | The id of the HTML element where the Checkout form should be included.     |
+| `onSuccess`      | `function` | no       | `() => {}`           | Callback function to be called when the Checkout is finished successfully. |
+| `onError`        | `function` | no       | `() => {}`           | Callback function to be called on (unrecoverable) errors.                  |
+| `onPaymentError` | `function` | no       | `() => {}`           | Callback function to be called on (recoverable) payment errors.            |
+| `onClose`        | `function` | no       | `undefined`          | Callback function to be called when the Checkout interaction is closed.    |
+| `testing`        | `boolean`  | no       | `false`              | Whether to use the testing API (`true`) or the production one (`false`).   |
+| `display`(1)     | `string`   | no       | `'inline'`           | The display style of the element that hosts the Checkout.                  |
+| `hideDetails`    | `boolean`  | no       | `false` | Whether to hide the details form or not. An expandable summary will be shown with the details, instead. |
+| `language`(2)    | `string`   | no       | `undefined`          | The language in which to display the Checkout.                             |
 | `logoUrl`               | `string`  | no       | `undefined`     | The merchant logo url to display in the Checkout.                           |
 | `backgroundColor`       | `string`  | no       | `'#ffffff'`     | The color used as the background of the Checkout page.                      |
 | `accentColor`           | `string`  | no       | `'#0d71f9'`     | The color used in highlights, as well as default buttons and input borders. |
