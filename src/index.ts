@@ -492,7 +492,12 @@ export class CheckoutInstance {
    * If the Checkout gets an error or if it is closed without a successful payment, the event listener is not removed.
    */
   private handleMessage(e: MessageEvent) {
-    if (e.origin === this.originUrl && e.data.type === 'ep-checkout') {
+    const originTrailingSlash = e.origin.endsWith('/') ? e.origin : e.origin.concat('/')
+    const iframeUrlTrailingSlash = this.originUrl.endsWith('/')
+      ? this.originUrl
+      : this.originUrl.concat('/')
+
+    if (originTrailingSlash === iframeUrlTrailingSlash && e.data.type === 'ep-checkout') {
       if (e.data.status === 'close') {
         if (this.dialog) {
           /* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
@@ -507,26 +512,26 @@ export class CheckoutInstance {
         }
       }
 
-      switch(e.data.status) {
-        case 'success':
-          this.successfulPaymentInteraction = true
+      switch (e.data.status) {
+      case 'success':
+        this.successfulPaymentInteraction = true
           this.options.onSuccess!(e.data.checkout)
-          break
-        case 'error':
+        break
+      case 'error':
           this.options.onError!(e.data.error)
-          break
-        case 'payment-error':
-          const paymentError: CheckoutPaymentError = {
-            code: e.data.error.code,
-            paymentMethod: e.data.paymentMethod,
-          }
-          if (e.data.checkout) {
-            paymentError.checkout = e.data.checkout
-          }
+        break
+      case 'payment-error':
+        const paymentError: CheckoutPaymentError = {
+          code: e.data.error.code,
+          paymentMethod: e.data.paymentMethod,
+        }
+        if (e.data.checkout) {
+          paymentError.checkout = e.data.checkout
+        }
           this.options.onPaymentError!(paymentError)
-          break
-        default:
-          // Do nothing
+        break
+      default:
+        // Do nothing
       }
     }
   }
