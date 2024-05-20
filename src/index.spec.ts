@@ -365,21 +365,21 @@ describe('SDK', () => {
     const checkout = startCheckout(manifest)
     expect(consoleSpy).not.toHaveBeenCalled()
     const iframe = document.querySelector('#easypay-checkout iframe') as HTMLIFrameElement
-    const manifestString = window.btoa(JSON.stringify({
-      id: 'id',
-      session: 'session',
-      config: {
-        allowClose: false,
-        backgroundColor: 'white',
-        inputFloatingLabel: true,
-        buttonBoxShadow: true,
-        sdkVersion,
-      }
-    }))
-    expect(iframe).toBeTruthy()
-    expect(iframe.getAttribute('src')).toBe(
-      `https://pay.easypay.pt?manifest=${manifestString}`
+    const manifestString = window.btoa(
+      JSON.stringify({
+        id: 'id',
+        session: 'session',
+        config: {
+          allowClose: false,
+          backgroundColor: 'white',
+          inputFloatingLabel: true,
+          buttonBoxShadow: true,
+          sdkVersion,
+        },
+      })
     )
+    expect(iframe).toBeTruthy()
+    expect(iframe.getAttribute('src')).toBe(`https://pay.easypay.pt?manifest=${manifestString}`)
     checkout.unmount()
   })
 
@@ -390,17 +390,19 @@ describe('SDK', () => {
     const checkout = startCheckout(manifest, { testing: true })
     expect(consoleSpy).not.toHaveBeenCalled()
     const iframe = document.querySelector('#easypay-checkout iframe') as HTMLIFrameElement
-    const manifestString = window.btoa(JSON.stringify({
-      id: 'id',
-      session: 'session',
-      config: {
-        allowClose: false,
-        backgroundColor: 'white',
-        inputFloatingLabel: true,
-        buttonBoxShadow: true,
-        sdkVersion,
-      }
-    }))
+    const manifestString = window.btoa(
+      JSON.stringify({
+        id: 'id',
+        session: 'session',
+        config: {
+          allowClose: false,
+          backgroundColor: 'white',
+          inputFloatingLabel: true,
+          buttonBoxShadow: true,
+          sdkVersion,
+        },
+      })
+    )
     expect(iframe).toBeTruthy()
     expect(iframe.getAttribute('src')).toBe(
       `https://pay.sandbox.easypay.pt?manifest=${manifestString}`
@@ -415,21 +417,21 @@ describe('SDK', () => {
     const checkout = startCheckout(manifest, { iframeUrl: 'https://localhost/nothing' })
     expect(consoleSpy).not.toHaveBeenCalled()
     const iframe = document.querySelector('#easypay-checkout iframe') as HTMLIFrameElement
-    const manifestString = window.btoa(JSON.stringify({
-      id: 'id',
-      session: 'session',
-      config: {
-        allowClose: false,
-        backgroundColor: 'white',
-        inputFloatingLabel: true,
-        buttonBoxShadow: true,
-        sdkVersion,
-      }
-    }))
-    expect(iframe).toBeTruthy()
-    expect(iframe.getAttribute('src')).toBe(
-      `https://localhost/nothing?manifest=${manifestString}`
+    const manifestString = window.btoa(
+      JSON.stringify({
+        id: 'id',
+        session: 'session',
+        config: {
+          allowClose: false,
+          backgroundColor: 'white',
+          inputFloatingLabel: true,
+          buttonBoxShadow: true,
+          sdkVersion,
+        },
+      })
     )
+    expect(iframe).toBeTruthy()
+    expect(iframe.getAttribute('src')).toBe(`https://localhost/nothing?manifest=${manifestString}`)
     checkout.unmount()
   })
 
@@ -674,6 +676,50 @@ describe('SDK', () => {
     checkout.unmount()
   })
 
+  test('handles message on completion with a trailing slash iframeUrl ', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    let storedSuccess
+    const checkout = startCheckout(manifest, {
+      onSuccess: (checkoutMessage) => {
+        storedSuccess = checkoutMessage
+      },
+      iframeUrl: 'https://pay.easypay.pt/',
+    })
+    const message: MessageEvent = new MessageEvent('message', {
+      data: { type: 'ep-checkout', status: 'success', checkout: checkoutResult },
+      origin: 'https://pay.easypay.pt',
+    })
+    window.dispatchEvent(message)
+    expect(storedSuccess).toEqual(checkoutResult)
+    const closeMessage: MessageEvent = new MessageEvent('message', {
+      data: { type: 'ep-checkout', status: 'close' },
+      origin: 'https://pay.easypay.pt',
+    })
+    window.dispatchEvent(closeMessage)
+    const secondMessage: MessageEvent = new MessageEvent('message', {
+      data: {
+        type: 'ep-checkout',
+        status: 'success',
+        checkout: {
+          id: '2fdc12ca-d600-4ef4-be51-be1626cc1329',
+          type: 'single',
+          payment: {
+            id: '4e5a2766-e010-4ed0-8bc0-eea57fb30d63',
+            method: 'cc',
+            status: 'authorised',
+            value: 120,
+          },
+        },
+      },
+      origin: 'https://pay.easypay.pt',
+    })
+    window.dispatchEvent(secondMessage)
+    expect(storedSuccess).toEqual(checkoutResult)
+    checkout.unmount()
+  })
+
   test('cleans up the message handler on unmount', () => {
     const host = document.createElement('div')
     host.setAttribute('id', 'easypay-checkout')
@@ -733,31 +779,31 @@ describe('SDK', () => {
     const checkout = startCheckout(manifest, options)
     expect(consoleSpy).not.toHaveBeenCalled()
     const iframe = document.querySelector('#easypay-checkout iframe') as HTMLIFrameElement
-    const manifestString = window.btoa(JSON.stringify({
-      id: 'id',
-      session: 'session',
-      config: {
-        allowClose: false,
-        backgroundColor: 'lightgreen',
-        inputFloatingLabel: false,
-        buttonBoxShadow: false,
-        sdkVersion,
-        hideDetails: true,
-        accentColor: 'darkblue',
-        errorColor: 'mediumpurple',
-        inputBackgroundColor: 'lightgreen',
-        inputBorderColor: 'darkblue',
-        inputBorderRadius: 2,
-        buttonBorderRadius: 3,
-        fontFamily: 'Courier New',
-        baseFontSize: 20
-      }
-    }))
-    expect(iframe).toBeTruthy()
-    expect(iframe.getAttribute('src')).toBe(
-      `https://pay.easypay.pt?manifest=${manifestString}`
+    const manifestString = window.btoa(
+      JSON.stringify({
+        id: 'id',
+        session: 'session',
+        config: {
+          allowClose: false,
+          backgroundColor: 'lightgreen',
+          inputFloatingLabel: false,
+          buttonBoxShadow: false,
+          sdkVersion,
+          hideDetails: true,
+          accentColor: 'darkblue',
+          errorColor: 'mediumpurple',
+          inputBackgroundColor: 'lightgreen',
+          inputBorderColor: 'darkblue',
+          inputBorderRadius: 2,
+          buttonBorderRadius: 3,
+          fontFamily: 'Courier New',
+          baseFontSize: 20,
+        },
+      })
     )
+    expect(iframe).toBeTruthy()
     expect(iframe.style.backgroundColor).toBe('lightgreen')
+    expect(iframe.getAttribute('src')).toBe(`https://pay.easypay.pt?manifest=${manifestString}`)
     checkout.unmount()
   })
 })
