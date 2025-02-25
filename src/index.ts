@@ -39,7 +39,7 @@ export interface CheckoutManifest {
 export type CheckoutType = 'single' | 'frequent' | 'subscription'
 
 /** The possible payment methods. */
-export type CheckoutMethod = 'cc' | 'mbw' | 'mb' | 'dd' | 'vi' | 'uf' | 'sc'
+export type CheckoutMethod = 'cc' | 'mbw' | 'mb' | 'dd' | 'vi' | 'ap' | 'gp'
 
 /** The possible payment status values. */
 export type PaymentStatus =
@@ -513,24 +513,24 @@ export class CheckoutInstance {
       }
 
       switch (e.data.status) {
-      case 'success':
-        this.successfulPaymentInteraction = true
+        case 'success':
+          this.successfulPaymentInteraction = true
           this.options.onSuccess!(e.data.checkout)
-        break
-      case 'error':
+          break
+        case 'error':
           this.options.onError!(e.data.error)
-        break
-      case 'payment-error':
-        const paymentError: CheckoutPaymentError = {
-          code: e.data.error.code,
-          paymentMethod: e.data.paymentMethod,
-        }
-        if (e.data.checkout) {
-          paymentError.checkout = e.data.checkout
-        }
+          break
+        case 'payment-error':
+          const paymentError: CheckoutPaymentError = {
+            code: e.data.error.code,
+            paymentMethod: e.data.paymentMethod,
+          }
+          if (e.data.checkout) {
+            paymentError.checkout = e.data.checkout
+          }
           this.options.onPaymentError!(paymentError)
-        break
-      default:
+          break
+        default:
         // Do nothing
       }
     }
