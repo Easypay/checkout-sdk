@@ -39,7 +39,7 @@ export interface CheckoutManifest {
 export type CheckoutType = 'single' | 'frequent' | 'subscription'
 
 /** The possible payment methods. */
-export type CheckoutMethod = 'cc' | 'mbw' | 'mb' | 'dd' | 'vi' | 'ap' | 'gp'
+export type CheckoutMethod = 'cc' | 'mbw' | 'mb' | 'dd' | 'vi' | 'ap' | 'gp' | 'sw'
 
 /** The possible payment status values. */
 export type PaymentStatus =

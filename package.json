@@ -1,6 +1,6 @@
 {
   "name": "@easypaypt/checkout-sdk",
-  "version": "2.7.2",
+  "version": "2.7.3",
   "description": "SDK for easypay's Checkout",
   "main": "dist/index.js",
   "types": "dist/src/index.d.ts",
