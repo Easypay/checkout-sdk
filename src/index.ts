@@ -327,7 +327,7 @@ export class CheckoutInstance {
     if (inputBorderColor) {
       manifest.config!.inputBorderColor = inputBorderColor
     }
-    if (inputBorderRadius) {
+    if (inputBorderRadius !== undefined) {
       manifest.config!.inputBorderRadius = inputBorderRadius
     }
     if (inputFloatingLabel !== undefined) {
@@ -336,7 +336,7 @@ export class CheckoutInstance {
     if (buttonBackgroundColor) {
       manifest.config!.buttonBackgroundColor = buttonBackgroundColor
     }
-    if (buttonBorderRadius) {
+    if (buttonBorderRadius !== undefined) {
       manifest.config!.buttonBorderRadius = buttonBorderRadius
     }
     if (buttonBoxShadow !== undefined) {
