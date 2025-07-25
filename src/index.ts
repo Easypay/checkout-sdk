@@ -18,6 +18,7 @@ export interface CheckoutManifest {
     language?: string
     logoUrl?: string
     hideDetails?: boolean
+    hideSubscriptionSummary?: boolean
     allowClose?: boolean
     sdkVersion?: string
     backgroundColor?: string
@@ -140,6 +141,8 @@ export interface CheckoutOptions {
   display?: string
   /** Wether the Checkout should have the customer details form hidden */
   hideDetails?: boolean
+  /** Wether the Checkout should have the subscription summary hidden */
+  hideSubscriptionSummary?: boolean
   /** Which language should the Checkout be displayed in*/
   language?: string
   /** The logo url of the merchant */
@@ -188,6 +191,7 @@ const defaultOptions: CheckoutOptions = {
   iframeUrl: '',
   display: 'inline',
   hideDetails: false,
+  hideSubscriptionSummary: false,
   language: '',
   logoUrl: '',
   backgroundColor: 'white',
@@ -278,6 +282,7 @@ export class CheckoutInstance {
   private mapOptionsToManifest(manifest: CheckoutManifest, options: CheckoutOptions) {
     const {
       hideDetails,
+      hideSubscriptionSummary,
       language,
       logoUrl,
       display,
@@ -299,6 +304,9 @@ export class CheckoutInstance {
     }
     if (hideDetails) {
       manifest.config!.hideDetails = hideDetails
+    }
+    if (hideSubscriptionSummary) {
+      manifest.config!.hideSubscriptionSummary = hideSubscriptionSummary
     }
     if (language) {
       manifest.config!.language = language
@@ -405,6 +413,12 @@ export class CheckoutInstance {
     }
     if (typeof options.hideDetails !== 'boolean') {
       console.error(`${CheckoutInstance.LOGTAG} The hideDetails option must be true or false.`)
+      return false
+    }
+    if (typeof options.hideSubscriptionSummary !== 'boolean') {
+      console.error(
+        `${CheckoutInstance.LOGTAG} The hideSubscriptionSummary option must be true or false.`
+      )
       return false
     }
     if (typeof options.language !== 'string') {
