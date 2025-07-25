@@ -183,6 +183,18 @@ describe('SDK', () => {
     expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
   })
 
+  test('display error when it receives a non-boolean hideSubscriptionSummary option', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    // @ts-ignore
+    startCheckout(manifest, { hideSubscriptionSummary: 4 })
+    expect(consoleSpy).toHaveBeenCalledWith(
+      expect.stringContaining('hideSubscriptionSummary option')
+    )
+    expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
+  })
+
   test('display error when it receives a non-string language option', () => {
     const host = document.createElement('div')
     host.setAttribute('id', 'easypay-checkout')
@@ -764,6 +776,7 @@ describe('SDK', () => {
     document.body.appendChild(host)
     const options = {
       hideDetails: true,
+      hideSubscriptionSummary: true,
       backgroundColor: 'lightgreen',
       accentColor: 'darkblue',
       errorColor: 'mediumpurple',
@@ -790,6 +803,7 @@ describe('SDK', () => {
           buttonBoxShadow: false,
           sdkVersion,
           hideDetails: true,
+          hideSubscriptionSummary: true,
           accentColor: 'darkblue',
           errorColor: 'mediumpurple',
           inputBackgroundColor: 'lightgreen',
