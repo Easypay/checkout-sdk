@@ -183,6 +183,26 @@ describe('SDK', () => {
     expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
   })
 
+  test('display error when it receives a non-boolean hideDetailsButton option', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    // @ts-ignore
+    startCheckout(manifest, { hideDetailsButton: 4 })
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('hideDetailsButton option'))
+    expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
+  })
+
+  test('display error when it receives a non-boolean hideCartButton option', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    // @ts-ignore
+    startCheckout(manifest, { hideCartButton: 4 })
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('hideCartButton option'))
+    expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
+  })
+
   test('display error when it receives a non-string language option', () => {
     const host = document.createElement('div')
     host.setAttribute('id', 'easypay-checkout')
@@ -283,6 +303,16 @@ describe('SDK', () => {
     expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
   })
 
+  test('displays error when it receives a non-string buttonTextColor', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    // @ts-ignore
+    startCheckout(manifest, { buttonTextColor: 4 })
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('buttonTextColor option'))
+    expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
+  })
+
   test('displays error when it receives a non-number element buttonBorderRadius', () => {
     const host = document.createElement('div')
     host.setAttribute('id', 'easypay-checkout')
@@ -300,6 +330,26 @@ describe('SDK', () => {
     // @ts-ignore
     startCheckout(manifest, { buttonBoxShadow: 'test' })
     expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('buttonBoxShadow option'))
+    expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
+  })
+
+  test('displays error when it receives a non-string linkColor', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    // @ts-ignore
+    startCheckout(manifest, { linkColor: 4 })
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('linkColor option'))
+    expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
+  })
+
+  test('displays error when it receives a non-string stepperTextColor', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    // @ts-ignore
+    startCheckout(manifest, { stepperTextColor: 4 })
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('stepperTextColor option'))
     expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
   })
 
@@ -764,6 +814,8 @@ describe('SDK', () => {
     document.body.appendChild(host)
     const options = {
       hideDetails: true,
+      hideDetailsButton: true,
+      hideCartButton: true,
       backgroundColor: 'lightgreen',
       accentColor: 'darkblue',
       errorColor: 'mediumpurple',
@@ -771,8 +823,11 @@ describe('SDK', () => {
       inputBorderColor: 'darkblue',
       inputBorderRadius: 2,
       inputFloatingLabel: false,
+      buttonBackgroundColor: 'blue',
       buttonBorderRadius: 3,
       buttonBoxShadow: false,
+      linkColor: 'green',
+      stepperTextColor: 'red',
       fontFamily: 'Courier New',
       baseFontSize: 20,
     }
@@ -790,12 +845,17 @@ describe('SDK', () => {
           buttonBoxShadow: false,
           sdkVersion,
           hideDetails: true,
+          hideDetailsButton: true,
+          hideCartButton: true,
           accentColor: 'darkblue',
           errorColor: 'mediumpurple',
           inputBackgroundColor: 'lightgreen',
           inputBorderColor: 'darkblue',
           inputBorderRadius: 2,
+          buttonBackgroundColor: 'blue',
           buttonBorderRadius: 3,
+          linkColor: 'green',
+          stepperTextColor: 'red',
           fontFamily: 'Courier New',
           baseFontSize: 20,
         },
