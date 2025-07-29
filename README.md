@@ -28,35 +28,36 @@ const checkoutInstance = startCheckout(manifest, [options])
 
 **`manifest`** - server to server response from checkout session creation
 
-| Option           | Type       | Required | Default              | Description                                                                |
-| ---------------- | ---------- | -------- | -------------------- | -------------------------------------------------------------------------- |
-| `id`             | `string`   | no       | `'easypay-checkout'` | The id of the HTML element where the Checkout form should be included.     |
-| `onSuccess`      | `function` | no       | `() => {}`           | Callback function to be called when the Checkout is finished successfully. |
-| `onError`        | `function` | no       | `() => {}`           | Callback function to be called on (unrecoverable) errors.                  |
-| `onPaymentError` | `function` | no       | `() => {}`           | Callback function to be called on (recoverable) payment errors.            |
-| `onClose`        | `function` | no       | `undefined`          | Callback function to be called when the Checkout interaction is closed.    |
-| `testing`        | `boolean`  | no       | `false`              | Whether to use the testing API (`true`) or the production one (`false`).   |
-| `display`(1)     | `string`   | no       | `'inline'`           | The display style of the element that hosts the Checkout.                  |
-| `hideDetails`    | `boolean`  | no       | `false`              | Whether to hide the details form or not. An expandable summary will be shown with the details instead, unless `hideDetailsButton` is also `true`. |
-| `hideDetailsButton`     | `boolean` | no       | `false`        | Whether to hide the details button and expandable summary, when `hideDetails` is `true`. |
-| `hideCartButton`        | `boolean` | no       | `false`        | Whether to hide the cart button and expandable order summary.              |
-| `language`(2)           | `string`  | no       | `undefined`    | The language in which to display the Checkout.                             |
-| `logoUrl`               | `string`  | no       | `undefined`    | The merchant logo url to display in the Checkout.                           |
-| `backgroundColor`       | `string`  | no       | `'#ffffff'`     | The color used as the background of the Checkout page.                      |
-| `accentColor`           | `string`  | no       | `'#0d71f9'`     | The color used in highlights, as well as default buttons and input borders. |
-| `errorColor`            | `string`  | no       | `'#ff151f'`     | The color used for errors.                                                  |
-| `inputBackgroundColor`  | `string`  | no       | `'transparent'` | The color used for the input backgrounds.                                   |
-| `inputBorderColor`      | `string`  | no       | *accentColor*   | The color for input borders.                                                |
-| `inputBorderRadius`     | `number`  | no       | `50`            | The border radius for inputs, in `px`.                                      |
-| `inputFloatingLabel`    | `boolean` | no       | `true`          | Whether inputs should use floating labels.                                  |
-| `buttonBackgroundColor` | `string`  | no       | *accentColor*   | The color used for the button backgrounds.                                  |
-| `buttonTextColor`       | `string`  | no       | `undefined`     | The color used for the button text. If undefined, a contrasting color will be chosen. |
-| `buttonBorderRadius`    | `number`  | no       | `50`            | The border radius for buttons, in `px`.                                     |
-| `buttonBoxShadow`       | `boolean` | no       | `true`          | Whether the buttons should have box-shadow.                                 |
-| `linkColor`             | `string`  | no       | `'#0d71f9'`     | The color used for the links text.                                          |
-| `stepperTextColor`      | `string`  | no       | `undefined`     | The color used for the stepper text. If undefined, a contrasting color will be chosen. |
-| `fontFamily`            | `string`  | no       | `'Overpass'`    | The font used for the text.                                                 |
-| `baseFontSize`          | `number`  | no       | `10`            | The value in `px` for the font size of the root element (`1rem`).           |
+| Option                    | Type       | Required | Default              | Description                                                                                                                                       |
+| ------------------------- | ---------- | -------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                      | `string`   | no       | `'easypay-checkout'` | The id of the HTML element where the Checkout form should be included.                                                                            |
+| `onSuccess`               | `function` | no       | `() => {}`           | Callback function to be called when the Checkout is finished successfully.                                                                        |
+| `onError`                 | `function` | no       | `() => {}`           | Callback function to be called on (unrecoverable) errors.                                                                                         |
+| `onPaymentError`          | `function` | no       | `() => {}`           | Callback function to be called on (recoverable) payment errors.                                                                                   |
+| `onClose`                 | `function` | no       | `undefined`          | Callback function to be called when the Checkout interaction is closed.                                                                           |
+| `testing`                 | `boolean`  | no       | `false`              | Whether to use the testing API (`true`) or the production one (`false`).                                                                          |
+| `display`(1)              | `string`   | no       | `'inline'`           | The display style of the element that hosts the Checkout.                                                                                         |
+| `hideDetails`             | `boolean`  | no       | `false`              | Whether to hide the details form or not. An expandable summary will be shown with the details instead, unless `hideDetailsButton` is also `true`. |
+| `hideDetailsButton`       | `boolean`  | no       | `false`              | Whether to hide the details button and expandable summary, when `hideDetails` is `true`.                                                          |
+| `hideCartButton`          | `boolean`  | no       | `false`              | Whether to hide the cart button and expandable order summary.                                                                                     |
+| `hideSubscriptionSummary` | `boolean`  | no       | `false`              | Whether to hide the subscription summary or not.                                                                                                  |
+| `language`(2)             | `string`   | no       | `undefined`          | The language in which to display the Checkout.                                                                                                    |
+| `logoUrl`                 | `string`   | no       | `undefined`          | The merchant logo url to display in the Checkout.                                                                                                 |
+| `backgroundColor`         | `string`   | no       | `'#ffffff'`          | The color used as the background of the Checkout page.                                                                                            |
+| `accentColor`             | `string`   | no       | `'#0d71f9'`          | The color used in highlights, as well as default buttons and input borders.                                                                       |
+| `errorColor`              | `string`   | no       | `'#ff151f'`          | The color used for errors.                                                                                                                        |
+| `inputBackgroundColor`    | `string`   | no       | `'transparent'`      | The color used for the input backgrounds.                                                                                                         |
+| `inputBorderColor`        | `string`   | no       | _accentColor_        | The color for input borders.                                                                                                                      |
+| `inputBorderRadius`       | `number`   | no       | `50`                 | The border radius for inputs, in `px`.                                                                                                            |
+| `inputFloatingLabel`      | `boolean`  | no       | `true`               | Whether inputs should use floating labels.                                                                                                        |
+| `buttonBackgroundColor`   | `string`   | no       | _accentColor_        | The color used for the button backgrounds.                                                                                                        |
+| `buttonTextColor`         | `string`   | no       | `undefined`          | The color used for the button text. If undefined, a contrasting color will be chosen.                                                             |
+| `buttonBorderRadius`      | `number`   | no       | `50`                 | The border radius for buttons, in `px`.                                                                                                           |
+| `buttonBoxShadow`         | `boolean`  | no       | `true`               | Whether the buttons should have box-shadow.                                                                                                       |
+| `linkColor`               | `string`   | no       | `'#0d71f9'`          | The color used for the links text.                                                                                                                |
+| `stepperTextColor`        | `string`   | no       | `undefined`          | The color used for the stepper text. If undefined, a contrasting color will be chosen.                                                            |
+| `fontFamily`              | `string`   | no       | `'Overpass'`         | The font used for the text.                                                                                                                       |
+| `baseFontSize`            | `number`   | no       | `10`                 | The value in `px` for the font size of the root element (`1rem`).                                                                                 |
 
 #### Options
 
@@ -141,7 +142,8 @@ const checkoutInstance = easypayCheckout.startCheckout(manifest, {
   inputBorderColor: '#000',
   inputBackgroundColor: '#ffe7c4',
   backgroundColor: '#eee',
-  fontFamily: 'https://fonts.gstatic.com/s/raleway/v28/1Ptxg8zYS_SKggPN4iEgvnHyvveLxVvaorCIPrEVIT9d0c8.woff2',
+  fontFamily:
+    'https://fonts.gstatic.com/s/raleway/v28/1Ptxg8zYS_SKggPN4iEgvnHyvveLxVvaorCIPrEVIT9d0c8.woff2',
 })
 ```
 
@@ -187,5 +189,6 @@ There are a few problems that may come up while integrating Checkout with your a
 
   If this occurs while integrating Checkout, check the browser devtools to see more details about the error.
   Sometimes due to some misconfiguration, while calling Checkout creation, this may happen. The fix is simple:
-    1. Open the browser devtools to check which config option is throwing the error.
-    2. Update the option accordingly.
+
+  1. Open the browser devtools to check which config option is throwing the error.
+  2. Update the option accordingly.

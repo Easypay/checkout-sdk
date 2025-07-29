@@ -20,6 +20,7 @@ export interface CheckoutManifest {
     hideDetails?: boolean
     hideDetailsButton?: boolean
     hideCartButton?: boolean
+    hideSubscriptionSummary?: boolean
     allowClose?: boolean
     sdkVersion?: string
     backgroundColor?: string
@@ -149,6 +150,8 @@ export interface CheckoutOptions {
   hideDetailsButton?: boolean
   /** Wether the Checkout should have the order details button and summary hidden */
   hideCartButton?: boolean
+  /** Wether the Checkout should have the subscription summary hidden */
+  hideSubscriptionSummary?: boolean
   /** Which language should the Checkout be displayed in*/
   language?: string
   /** The logo url of the merchant */
@@ -205,6 +208,7 @@ const defaultOptions: CheckoutOptions = {
   hideDetails: false,
   hideDetailsButton: false,
   hideCartButton: false,
+  hideSubscriptionSummary: false,
   language: '',
   logoUrl: '',
   backgroundColor: 'white',
@@ -300,6 +304,7 @@ export class CheckoutInstance {
       hideDetails,
       hideDetailsButton,
       hideCartButton,
+      hideSubscriptionSummary,
       language,
       logoUrl,
       display,
@@ -330,6 +335,9 @@ export class CheckoutInstance {
     }
     if (hideCartButton) {
       manifest.config!.hideCartButton = hideCartButton
+    }
+    if (hideSubscriptionSummary) {
+      manifest.config!.hideSubscriptionSummary = hideSubscriptionSummary
     }
     if (language) {
       manifest.config!.language = language
@@ -448,11 +456,19 @@ export class CheckoutInstance {
       return false
     }
     if (typeof options.hideDetailsButton !== 'boolean') {
-      console.error(`${CheckoutInstance.LOGTAG} The hideDetailsButton option must be true or false.`)
+      console.error(
+        `${CheckoutInstance.LOGTAG} The hideDetailsButton option must be true or false.`
+      )
       return false
     }
     if (typeof options.hideCartButton !== 'boolean') {
       console.error(`${CheckoutInstance.LOGTAG} The hideCartButton option must be true or false.`)
+      return false
+    }
+    if (typeof options.hideSubscriptionSummary !== 'boolean') {
+      console.error(
+        `${CheckoutInstance.LOGTAG} The hideSubscriptionSummary option must be true or false.`
+      )
       return false
     }
     if (typeof options.language !== 'string') {
