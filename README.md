@@ -37,9 +37,11 @@ const checkoutInstance = startCheckout(manifest, [options])
 | `onClose`        | `function` | no       | `undefined`          | Callback function to be called when the Checkout interaction is closed.    |
 | `testing`        | `boolean`  | no       | `false`              | Whether to use the testing API (`true`) or the production one (`false`).   |
 | `display`(1)     | `string`   | no       | `'inline'`           | The display style of the element that hosts the Checkout.                  |
-| `hideDetails`    | `boolean`  | no       | `false` | Whether to hide the details form or not. An expandable summary will be shown with the details, instead. |
-| `language`(2)    | `string`   | no       | `undefined`          | The language in which to display the Checkout.                             |
-| `logoUrl`               | `string`  | no       | `undefined`     | The merchant logo url to display in the Checkout.                           |
+| `hideDetails`    | `boolean`  | no       | `false`              | Whether to hide the details form or not. An expandable summary will be shown with the details instead, unless `hideDetailsButton` is also `true`. |
+| `hideDetailsButton`     | `boolean` | no       | `false`        | Whether to hide the details button and expandable summary, when `hideDetails` is `true`. |
+| `hideCartButton`        | `boolean` | no       | `false`        | Whether to hide the cart button and expandable order summary.              |
+| `language`(2)           | `string`  | no       | `undefined`    | The language in which to display the Checkout.                             |
+| `logoUrl`               | `string`  | no       | `undefined`    | The merchant logo url to display in the Checkout.                           |
 | `backgroundColor`       | `string`  | no       | `'#ffffff'`     | The color used as the background of the Checkout page.                      |
 | `accentColor`           | `string`  | no       | `'#0d71f9'`     | The color used in highlights, as well as default buttons and input borders. |
 | `errorColor`            | `string`  | no       | `'#ff151f'`     | The color used for errors.                                                  |
@@ -48,15 +50,18 @@ const checkoutInstance = startCheckout(manifest, [options])
 | `inputBorderRadius`     | `number`  | no       | `50`            | The border radius for inputs, in `px`.                                      |
 | `inputFloatingLabel`    | `boolean` | no       | `true`          | Whether inputs should use floating labels.                                  |
 | `buttonBackgroundColor` | `string`  | no       | *accentColor*   | The color used for the button backgrounds.                                  |
+| `buttonTextColor`       | `string`  | no       | `undefined`     | The color used for the button text. If undefined, a contrasting color will be chosen. |
 | `buttonBorderRadius`    | `number`  | no       | `50`            | The border radius for buttons, in `px`.                                     |
 | `buttonBoxShadow`       | `boolean` | no       | `true`          | Whether the buttons should have box-shadow.                                 |
+| `linkColor`             | `string`  | no       | `'#0d71f9'`     | The color used for the links text.                                          |
+| `stepperTextColor`      | `string`  | no       | `undefined`     | The color used for the stepper text. If undefined, a contrasting color will be chosen. |
 | `fontFamily`            | `string`  | no       | `'Overpass'`    | The font used for the text.                                                 |
 | `baseFontSize`          | `number`  | no       | `10`            | The value in `px` for the font size of the root element (`1rem`).           |
 
 #### Options
 
 (1)`display` available values: `inline`(default) or `popup`
-(2)`language` available values: `en` or `pt_PT`
+(2)`language` available values: `en`, `pt_PT` or `es_ES`. If undefined, a default language will be selected according to the customer's browser language.
 
 ### Linking to the Page
 

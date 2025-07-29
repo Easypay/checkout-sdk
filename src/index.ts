@@ -18,6 +18,8 @@ export interface CheckoutManifest {
     language?: string
     logoUrl?: string
     hideDetails?: boolean
+    hideDetailsButton?: boolean
+    hideCartButton?: boolean
     allowClose?: boolean
     sdkVersion?: string
     backgroundColor?: string
@@ -28,8 +30,11 @@ export interface CheckoutManifest {
     inputBorderRadius?: number
     inputFloatingLabel?: boolean
     buttonBackgroundColor?: string
+    buttonTextColor?: string
     buttonBorderRadius?: number
     buttonBoxShadow?: boolean
+    linkColor?: string
+    stepperTextColor?: string
     fontFamily?: string
     baseFontSize?: number
   }
@@ -140,6 +145,10 @@ export interface CheckoutOptions {
   display?: string
   /** Wether the Checkout should have the customer details form hidden */
   hideDetails?: boolean
+  /** Wether the Checkout should have the customer details button and summary hidden */
+  hideDetailsButton?: boolean
+  /** Wether the Checkout should have the order details button and summary hidden */
+  hideCartButton?: boolean
   /** Which language should the Checkout be displayed in*/
   language?: string
   /** The logo url of the merchant */
@@ -160,10 +169,16 @@ export interface CheckoutOptions {
   inputFloatingLabel?: boolean
   /** The checkout buttons background color */
   buttonBackgroundColor?: string
+  /** The checkout buttons text color */
+  buttonTextColor?: string
   /** The checkout buttons border radius */
   buttonBorderRadius?: number
   /** The checkout buttons box shadow */
   buttonBoxShadow?: boolean
+  /** The checkout links color */
+  linkColor?: string
+  /** The color of text inside the checkout stepper widget */
+  stepperTextColor?: string
   /** The checkout font family text*/
   fontFamily?: string
   /** The checkout font size text*/
@@ -188,6 +203,8 @@ const defaultOptions: CheckoutOptions = {
   iframeUrl: '',
   display: 'inline',
   hideDetails: false,
+  hideDetailsButton: false,
+  hideCartButton: false,
   language: '',
   logoUrl: '',
   backgroundColor: 'white',
@@ -198,8 +215,11 @@ const defaultOptions: CheckoutOptions = {
   inputBorderRadius: undefined,
   inputFloatingLabel: true,
   buttonBackgroundColor: '',
+  buttonTextColor: '',
   buttonBorderRadius: undefined,
   buttonBoxShadow: true,
+  linkColor: '',
+  stepperTextColor: '',
   fontFamily: '',
   baseFontSize: undefined,
 }
@@ -278,6 +298,8 @@ export class CheckoutInstance {
   private mapOptionsToManifest(manifest: CheckoutManifest, options: CheckoutOptions) {
     const {
       hideDetails,
+      hideDetailsButton,
+      hideCartButton,
       language,
       logoUrl,
       display,
@@ -289,8 +311,11 @@ export class CheckoutInstance {
       inputBorderRadius,
       inputFloatingLabel,
       buttonBackgroundColor,
+      buttonTextColor,
       buttonBorderRadius,
       buttonBoxShadow,
+      linkColor,
+      stepperTextColor,
       fontFamily,
       baseFontSize,
     } = options
@@ -299,6 +324,12 @@ export class CheckoutInstance {
     }
     if (hideDetails) {
       manifest.config!.hideDetails = hideDetails
+    }
+    if (hideDetailsButton) {
+      manifest.config!.hideDetailsButton = hideDetailsButton
+    }
+    if (hideCartButton) {
+      manifest.config!.hideCartButton = hideCartButton
     }
     if (language) {
       manifest.config!.language = language
@@ -336,11 +367,20 @@ export class CheckoutInstance {
     if (buttonBackgroundColor) {
       manifest.config!.buttonBackgroundColor = buttonBackgroundColor
     }
+    if (buttonTextColor) {
+      manifest.config!.buttonTextColor = buttonTextColor
+    }
     if (buttonBorderRadius !== undefined) {
       manifest.config!.buttonBorderRadius = buttonBorderRadius
     }
     if (buttonBoxShadow !== undefined) {
       manifest.config!.buttonBoxShadow = buttonBoxShadow
+    }
+    if (linkColor) {
+      manifest.config!.linkColor = linkColor
+    }
+    if (stepperTextColor) {
+      manifest.config!.stepperTextColor = stepperTextColor
     }
     if (fontFamily) {
       manifest.config!.fontFamily = fontFamily
@@ -407,6 +447,14 @@ export class CheckoutInstance {
       console.error(`${CheckoutInstance.LOGTAG} The hideDetails option must be true or false.`)
       return false
     }
+    if (typeof options.hideDetailsButton !== 'boolean') {
+      console.error(`${CheckoutInstance.LOGTAG} The hideDetailsButton option must be true or false.`)
+      return false
+    }
+    if (typeof options.hideCartButton !== 'boolean') {
+      console.error(`${CheckoutInstance.LOGTAG} The hideCartButton option must be true or false.`)
+      return false
+    }
     if (typeof options.language !== 'string') {
       console.error(`${CheckoutInstance.LOGTAG} The language option must be a string.`)
       return false
@@ -451,6 +499,10 @@ export class CheckoutInstance {
       console.error(`${CheckoutInstance.LOGTAG} The buttonBackgroundColor option must be a string.`)
       return false
     }
+    if (typeof options.buttonTextColor !== 'string') {
+      console.error(`${CheckoutInstance.LOGTAG} The buttonTextColor option must be a string.`)
+      return false
+    }
     if (
       typeof options.buttonBorderRadius !== 'number' &&
       options.buttonBorderRadius !== undefined
@@ -460,6 +512,14 @@ export class CheckoutInstance {
     }
     if (typeof options.buttonBoxShadow !== 'boolean') {
       console.error(`${CheckoutInstance.LOGTAG} The buttonBoxShadow option must be a boolean.`)
+      return false
+    }
+    if (typeof options.linkColor !== 'string') {
+      console.error(`${CheckoutInstance.LOGTAG} The linkColor option must be a string.`)
+      return false
+    }
+    if (typeof options.stepperTextColor !== 'string') {
+      console.error(`${CheckoutInstance.LOGTAG} The stepperTextColor option must be a string.`)
       return false
     }
     if (typeof options.fontFamily !== 'string') {
