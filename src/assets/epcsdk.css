@@ -4,6 +4,7 @@ dialog.epcsdk-modal {
   padding: 0;
   width: 400px;
   max-width: 90%;
+  height: 700px;
   background-color: white;
   transition: 200ms linear;
 }
@@ -17,4 +18,8 @@ dialog.epcsdk-modal + .backdrop {
   /* polyfill */
   background-color: rgba(0, 0, 0, 0.5);
   transition: 200ms ease-in-out;
+}
+
+dialog.epcsdk-modal iframe {
+  height: 100%;
 }
