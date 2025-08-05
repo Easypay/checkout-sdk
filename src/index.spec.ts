@@ -173,6 +173,16 @@ describe('SDK', () => {
     expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
   })
 
+  test('display error when it receives a non-boolean showLoading option', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    // @ts-ignore
+    startCheckout(manifest, { showLoading: 4 })
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('showLoading option'))
+    expect(document.querySelector('#easypay-checkout iframe')).toBeNull()
+  })
+
   test('display error when it receives a non-boolean hideDetails option', () => {
     const host = document.createElement('div')
     host.setAttribute('id', 'easypay-checkout')
@@ -442,6 +452,36 @@ describe('SDK', () => {
     )
     expect(iframe).toBeTruthy()
     expect(iframe.getAttribute('src')).toBe(`https://pay.easypay.pt?manifest=${manifestString}`)
+    checkout.unmount()
+  })
+
+  test('does not show loading indicator when showLoading is false', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    const checkout = startCheckout(manifest)
+    expect(consoleSpy).not.toHaveBeenCalled()
+    expect(document.querySelector('.epcsdk-loading')).toBeNull()
+    checkout.unmount()
+  })
+
+  test('shows loading indicator when showLoading is true', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    const checkout = startCheckout(manifest, { showLoading: true })
+    expect(consoleSpy).not.toHaveBeenCalled()
+    expect(document.querySelector('.epcsdk-loading')).toBeTruthy()
+    checkout.unmount()
+  })
+
+  test('shows loading indicator when showLoading is true and mode is popup', () => {
+    const host = document.createElement('div')
+    host.setAttribute('id', 'easypay-checkout')
+    document.body.appendChild(host)
+    const checkout = startCheckout(manifest, { showLoading: true, display: 'popup' })
+    expect(consoleSpy).not.toHaveBeenCalled()
+    expect(document.querySelector('.epcsdk-loading')).toBeTruthy()
     checkout.unmount()
   })
 

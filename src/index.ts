@@ -17,6 +17,7 @@ export interface CheckoutManifest {
   config: null | {
     language?: string
     logoUrl?: string
+    showLoading?: boolean
     hideDetails?: boolean
     hideDetailsButton?: boolean
     hideCartButton?: boolean
@@ -142,17 +143,19 @@ export interface CheckoutOptions {
   testing?: boolean
   /** The Checkout iframe URL which to include. Used to debug only. Will override the testing URL. */
   iframeUrl?: string
-  /** Wether the Checkout should be a popup or an inline element  */
+  /** Whether the Checkout should be a popup or an inline element */
   display?: string
-  /** Wether the Checkout should have the customer details form hidden */
+  /** Whether to show a loading indicator */
+  showLoading?: boolean
+  /** Whether the Checkout should have the customer details form hidden */
   hideDetails?: boolean
-  /** Wether the Checkout should have the customer details button and summary hidden */
+  /** Whether the Checkout should have the customer details button and summary hidden */
   hideDetailsButton?: boolean
-  /** Wether the Checkout should have the order details button and summary hidden */
+  /** Whether the Checkout should have the order details button and summary hidden */
   hideCartButton?: boolean
-  /** Wether the Checkout should have the subscription summary hidden */
+  /** Whether the Checkout should have the subscription summary hidden */
   hideSubscriptionSummary?: boolean
-  /** Which language should the Checkout be displayed in*/
+  /** Which language should the Checkout be displayed in */
   language?: string
   /** The logo url of the merchant */
   logoUrl?: string
@@ -162,13 +165,13 @@ export interface CheckoutOptions {
   accentColor?: string
   /** The error color of the checkout */
   errorColor?: string
-  /** The checkout inputs background color  */
+  /** The checkout inputs background color */
   inputBackgroundColor?: string
-  /** The checkout inputs border color  */
+  /** The checkout inputs border color */
   inputBorderColor?: string
-  /** The checkout inputs border radius  */
+  /** The checkout inputs border radius */
   inputBorderRadius?: number
-  /** The checkout inputs floating label  */
+  /** The checkout inputs floating label */
   inputFloatingLabel?: boolean
   /** The checkout buttons background color */
   buttonBackgroundColor?: string
@@ -182,9 +185,9 @@ export interface CheckoutOptions {
   linkColor?: string
   /** The color of text inside the checkout stepper widget */
   stepperTextColor?: string
-  /** The checkout font family text*/
+  /** The checkout font family text */
   fontFamily?: string
-  /** The checkout font size text*/
+  /** The checkout font size text */
   baseFontSize?: number
 }
 
@@ -205,6 +208,7 @@ const defaultOptions: CheckoutOptions = {
   testing: false,
   iframeUrl: '',
   display: 'inline',
+  showLoading: false,
   hideDetails: false,
   hideDetailsButton: false,
   hideCartButton: false,
@@ -295,7 +299,15 @@ export class CheckoutInstance {
 
       this.hostElement.addEventListener('click', this.clickHandler!)
     } else {
+      this.addCss()
       this.hostElement?.appendChild(iframe)
+    }
+
+    if (this.options.showLoading) {
+      iframe.parentElement?.classList.add('epcsdk-loading')
+      iframe.addEventListener('load', () => {
+        iframe.parentElement?.classList.remove('epcsdk-loading')
+      })
     }
   }
 
@@ -449,6 +461,10 @@ export class CheckoutInstance {
     }
     if (typeof options.display !== 'string' || !['inline', 'popup'].includes(options.display)) {
       console.error(`${CheckoutInstance.LOGTAG} The display option must be 'inline' or 'popup'.`)
+      return false
+    }
+    if (typeof options.showLoading !== 'boolean') {
+      console.error(`${CheckoutInstance.LOGTAG} The showLoading option must be true or false.`)
       return false
     }
     if (typeof options.hideDetails !== 'boolean') {
@@ -618,6 +634,20 @@ export class CheckoutInstance {
     this.dialog.showModal()
   }
 
+  private addCss(includeDialog = false) {
+    // Style element
+    const style = document.createElement('style')
+    style.setAttribute('type', 'text/css')
+
+    if (includeDialog) {
+      style.appendChild(document.createTextNode(dialogCss))
+    }
+
+    style.appendChild(document.createTextNode(epcsdkCss))
+    document.head.appendChild(style)
+    this.style = style
+  }
+
   /**
    * Creates popup modal in the DOM to host the Checkout iframe.
    *
@@ -628,22 +658,15 @@ export class CheckoutInstance {
     const dialog = document.createElement('dialog')
     const dialogBody = document.createElement('div')
 
-    // Style element
-    const style = document.createElement('style')
-    style.setAttribute('type', 'text/css')
-
     // Using polyfill if necessary
     /* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
     // @ts-ignore
-    if (typeof dialog.showModal !== 'function') {
-      style.appendChild(document.createTextNode(dialogCss))
-
+    const includeDialog = typeof dialog.showModal !== 'function'
+    if (includeDialog) {
       dialogPolyfill.registerDialog(dialog)
     }
+    this.addCss(includeDialog)
 
-    // Apply style
-    style.appendChild(document.createTextNode(epcsdkCss))
-    document.head.appendChild(style)
     if (this.options.backgroundColor) {
       dialog.setAttribute('style', `background-color:${this.options.backgroundColor}`)
     }
@@ -658,9 +681,7 @@ export class CheckoutInstance {
     // Mount to the end of body
     document.body.appendChild(dialog)
 
-    // Elements created on popup mode
     this.dialog = dialog
-    this.style = style
   }
 
   /**
@@ -675,10 +696,8 @@ export class CheckoutInstance {
       this.hostElement?.removeEventListener('click', this.clickHandler)
     }
 
-    if (this.dialog) {
-      this.dialog.remove()
-      this.style?.remove()
-    }
+    this.dialog?.remove()
+    this.style?.remove()
     const children = Array.from(document.getElementById(this.options.id!)?.children || [])
     children.map((child) => {
       child.remove()
