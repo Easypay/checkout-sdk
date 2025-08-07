@@ -23,3 +23,31 @@ dialog.epcsdk-modal + .backdrop {
 dialog.epcsdk-modal iframe {
   height: 100%;
 }
+
+.epcsdk-loading {
+  position: relative;
+}
+
+.epcsdk-loading::before {
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  display: block;
+  content: '';
+  width: 48px;
+  height: 48px;
+  border: 5px solid #dadada;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  box-sizing: border-box;
+  animation: epcsdk-rotation 1s linear infinite;
+}
+
+@keyframes epcsdk-rotation {
+  0% {
+    transform: translateX(-50%) rotate(0deg);
+  }
+  100% {
+    transform: translateX(-50%) rotate(360deg);
+  }
+}
