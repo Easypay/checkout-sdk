@@ -83,6 +83,12 @@ export interface CheckoutOutput {
     reference?: string
     /** Multibanco expiration date. Not used in other methods. */
     expirationDate?: string
+    /** Last four digits of a credit card. */
+    lastFour?: string
+    /** Credit card type. Either VISA or Mastercard. */
+    cardType?: string
+    /** Country code of a credit card. */
+    cardCountryCode?: string
     /** SEPA Direct Debit mandate. Used only in Direct Debit. */
     sddMandate?: {
       /** Name of the account holder. */
