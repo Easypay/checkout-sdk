@@ -21,6 +21,9 @@ describe('SDK', () => {
       method: 'cc',
       status: 'authorised',
       value: 120,
+      lastFour: '1234',
+      cardType: 'VISA',
+      cardCountryCode: 'PT',
     },
   }
 
