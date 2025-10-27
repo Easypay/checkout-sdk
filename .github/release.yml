@@ -1,0 +1,41 @@
+changelog:
+  exclude:
+    authors:
+      - dependabot[bot]
+  categories:
+    - title: "🛠 Breaking Changes"
+      labels:
+        - breaking-change
+    - title: "✨ New Features"
+      labels:
+        - feat
+    - title: "🐛 Bug Fixes"
+      labels:
+        - fix
+    - title: "📚 Documentation"
+      labels:
+        - docs
+    - title: "💅 Style"
+      labels:
+        - style
+    - title: "🧹 Refactoring"
+      labels:
+        - refactor
+    - title: "⚡️ Performance"
+      labels:
+        - perf
+    - title: "✅ Tests"
+      labels:
+        - test
+    - title: 🧰 CI / Build / Chore
+      labels:
+        - ci
+        - build
+        - chore
+    - title: 📦 Dependencies (Dependabot)
+      labels:
+        - dependencies
+        - dependabot
+    - title: Other Changes
+      labels:
+        - "*"
