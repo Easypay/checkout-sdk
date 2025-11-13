@@ -1,6 +1,6 @@
 {
   "name": "@easypaypt/checkout-sdk",
-  "version": "2.9.1",
+  "version": "2.9.2",
   "description": "SDK for easypay's Checkout",
   "main": "dist/index.js",
   "types": "dist/src/index.d.ts",
@@ -10,7 +10,9 @@
   "scripts": {
     "build": "rollup -c",
     "lint": "eslint --ignore-path .gitignore .",
-    "test": "jest"
+    "test": "jest",
+    "commit": "cz",
+    "release": "standard-version"
   },
   "keywords": [
     "easypay",
@@ -35,6 +37,8 @@
     "@types/node": "18.14.6",
     "@typescript-eslint/eslint-plugin": "5.54.1",
     "@typescript-eslint/parser": "5.54.1",
+    "commitizen": "4.3.1",
+    "cz-conventional-changelog": "3.3.0",
     "eslint": "8.20.0",
     "jest": "28.1.0",
     "jest-environment-jsdom": "28.1.3",
@@ -42,11 +46,19 @@
     "rollup": "2.77.2",
     "rollup-plugin-postcss": "4.0.2",
     "rollup-plugin-terser": "7.0.2",
+    "standard-version": "9.5.0",
     "ts-jest": "28.0.2",
     "tslib": "2.4.0",
     "typescript": "4.6.4"
   },
   "dependencies": {
     "dialog-polyfill": "0.5.6"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog",
+      "disableScopeLowerCase": true,
+      "disableSubjectLowerCase": true
+    }
   }
 }
